@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main">#f43688</color>
+    <color name="accent">#f43688</color>
+    <color name="topics_foreground">#FFFFFF</color>
+    <color name="topics_line">#CCCCCC</color>
+    <color name="topics_background">#EEEEEE</color>
+    <color name="green">#4CAF50</color>
+</resources>

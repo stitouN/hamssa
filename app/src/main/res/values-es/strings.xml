@@ -1,0 +1,107 @@
+<resources>
+    <string name="app_name">El Banquillo</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="news">Noticias</string>
+
+    <string name="year_ago">Hace %1$d año</string>
+    <string name="years_ago">Hace %1$d años</string>
+    <string name="month_ago">Hace %1$d mes</string>
+    <string name="months_ago">Hace %1$d meses</string>
+    <string name="day_ago">Hace %1$d día</string>
+    <string name="days_ago">Hace %1$d días</string>
+    <string name="hour_ago">Hace %1$d hora</string>
+    <string name="hours_ago">Hace %1$d horas</string>
+    <string name="a_moment_ago">Hace un momento</string>
+    <string name="minute_ago">Hace %1$d minuto</string>
+    <string name="minutes_ago">Hace %1$d minutos</string>
+
+    <string name="connection_error">Error de conexión</string>
+    <string name="empty_list">Lista vacía</string>
+
+    <string name="send">Enviar</string>
+    <string name="say_something">Da tu opinión</string>
+    <string name="message_sent">Mensaje enviado</string>
+
+    <string name="choose_your_unique_name">Elije tu nombre único \n(sin espacios ni caracteres especiales)</string>
+
+    <string name="unknown_error">Se ha producido un error desconocido</string>
+    <string name="name_min_length">El nombre debe tener un mínimo de 4 carácteres</string>
+    <string name="name_max_length">El nombre no puede tener más de 16 carácteres</string>
+    <string name="name_characters">Tu nombre solo puede contener números, letras y subguiones</string>
+    <string name="name_duplicated">El nombre debe ser único y este ya existe</string>
+
+    <string name="please_wait">Por favor espera</string>
+    <string name="connecting_with_server">Conectando con el servidor&#8230;</string>
+    <string name="vote_duplicated">Ya has votado este comentario</string>
+
+    <string name="action_configuration">Configuración</string>
+
+    <string name="you_have_been_mentioned">Te han mencionado</string>
+    <string name="you_have_been_mentioned_times">Te han mencionado %1$d veces</string>
+    <string name="you_received_likes">Has recibido %1$d votos</string>
+
+    <string name="message_not_found">Mensaje no encontrado</string>
+
+    <string name="most_commented_news">Más comentadas</string>
+    <string name="last_news">Últimas</string>
+    <string name="action_messages">Mis mensajes</string>
+
+    <string name="last_messages">Últimos</string>
+    <string name="most_voted_messages">Más votados</string>
+    <string name="received">Recibidos</string>
+    <string name="sent">Enviados</string>
+    <string name="reply_a_message">Responder mensaje</string>
+
+    <string name="my_posts">Mejores comentarios</string>
+    <string name="new_topic">Nueva noticia</string>
+    <string name="topic_description_hint">Descripción</string>
+    <string name="topic_content_hint">Aquí puedes escribir el resto sin límite de longitud</string>
+    <string name="action_send">Enviar</string>
+    <string name="email_address">Dirección de e-mail</string>
+
+    <string name="password_sent_title">User enlazado</string>
+    <string name="password_sent">Tu usuario ha sido enlazado con esta dirección de e-mail y se te ha enviado la contraseña.</string>
+
+    <string name="link_account">Añade tu e-mail</string>
+
+    <string name="email_link_title">Enlaza tu e-mail</string>
+    <string name="email_link_info">Debes enlazar tu usuario con un e-mail para que puedas loguearte desde otro dispositivo</string>
+
+    <string name="login_quick">Rápido</string>
+    <string name="login_email">e-mail</string>
+    <string name="login">Login</string>
+    <string name="user_or_email">Nombre de usuario o e-mail</string>
+    <string name="password">Contraseña</string>
+    <string name="user_not_found">Usuario o e-mail no encontrados</string>
+    <string name="wrong_password">Contraseña incorrecta</string>
+    <string name="add_an_image">Añade una imagen</string>
+    <string name="topic_detail">Detalle de noticia</string>
+
+    <string name="loading">Cargando&#8230;</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Borrar</string>
+    <string name="options_about_this_topic">Opciones de este elemento</string>
+
+    <string name="editing">Editando</string>
+    <string name="empty_description">Descripción vacía</string>
+    <string name="action_comments">Comentarios</string>
+    <string name="action_expand">Expandir</string>
+    <string name="new_content">Nuevo contenido</string>
+    <string name="notify_following">Notificar actividad de seguidos</string>
+    <string name="notify_new_content">Notificar contenido nuevo</string>
+    <string name="notify_references">Notificar cuando te referencien</string>
+    <string name="notify_votes">Notificar cuando te voten</string>
+    <string name="logout">Logout</string>
+    <string name="warning">Atención</string>
+    <string name="logout_warning">Enlaza tu cuenta con un e-mail o no podrás loguearte otra vez</string>
+    <string name="action_share">Compartir</string>
+    <string name="others">Otros</string>
+    <string name="download">Descarga</string>
+    <string name="promo_text">Discute noticias de fútbol, basket, F1, etc. con una app ágil, rápida y moderna.</string>
+    <string name="recover_password">Recuperar contraseña</string>
+    <string name="back">Volver</string>
+    <string name="continue_anyway">Continuar igualmente</string>
+    <string name="account_login_banner">Puedes loguearte con un email si ya te has logueado previamente y has enlazado tu cuenta a este email</string>
+
+</resources>
