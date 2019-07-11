@@ -508,17 +508,23 @@ public class Database {
 
         try {
             db.beginTransaction();
+            //TODO reste à voir si on supprime ou bien on flague uniquement
+            /*
             Cursor cursor = db.rawQuery("SELECT * FROM messages WHERE topicId = '" + topicId+"'", null);
+
 
             String value = null;
             if(cursor.moveToNext()){
                 value = cursor.getString(cursor.getColumnIndex("_id"));
                 db.delete("votes", "messageId = '"+value+"'", null);
                 db.delete("messages", "_id = '"+value+"'", null);
-            }
+            }*/
 
+            ContentValues values = new ContentValues();
+            values.put("removed", 1);
 
-            db.delete("topics", "topicId = '"+topicId+"'", null);
+            int rows = db.update("topics", values, "_id = '"+topicId+"'", null);
+            //db.delete("topics", "topicId = '"+topicId+"'", null);
 
             db.setTransactionSuccessful();
         }finally{
