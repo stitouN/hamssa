@@ -137,7 +137,7 @@
 
                 <ImageView
                     android:id="@+id/content_image"
-                    android:layout_width="372dp"
+                    android:layout_width="match_parent"
                     android:layout_height="208dp"
                     android:adjustViewBounds="false"
                     android:scaleType="centerCrop" />

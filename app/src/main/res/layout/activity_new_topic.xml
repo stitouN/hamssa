@@ -113,7 +113,6 @@
              android:maxLength="140"
              android:textColor="#777777"
              android:textStyle="bold"
-             android:background="@drawable/border"
              android:gravity="start|center"
              android:paddingLeft="8dp"
              android:paddingRight="8dp"
@@ -125,64 +124,8 @@
              android:layout_below="@id/description"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:background="@drawable/border"
              >
-             <LinearLayout
-                 android:id="@+id/ly_chronometer"
-                 android:layout_centerInParent="true"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:orientation="vertical"
-                 android:gravity="center"
-                 android:padding="8dp"
-                 android:visibility="gone"
-                 >
-                 <Chronometer
-                     android:id="@+id/rec_chronometer"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:textSize="48dp"
-                     android:text="00:00"
-                     android:textColor="#8F003A"
-                     android:textStyle="bold"
-                     />
-                 <ImageView
-                     android:layout_marginTop="8dp"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:background="@drawable/circel_mic"
-                     android:src="@drawable/ic_mic_black_24dp"
-                     />
 
-             </LinearLayout>
-             <LinearLayout
-                 android:id="@+id/ly_player"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:orientation="horizontal"
-                 android:gravity="center"
-                 android:background="#1D838383"
-                 android:weightSum="3"
-                 android:visibility="gone"
-                 >
-                 <ImageButton
-                     android:id="@+id/play_pause"
-                     android:layout_width="0dp"
-                     android:layout_weight="0.5"
-                     android:layout_height="48dp"
-                     android:background="@drawable/ic_play_arrow_black_24dp"
-                     />
-                 <SeekBar
-                     android:layout_weight="2"
-                     android:layout_width="0dp"
-                     android:layout_height="wrap_content" />
-                 <ImageView
-                     android:layout_weight="0.5"
-                     android:layout_width="0dp"
-                     android:layout_height="64dp"
-                     android:background="@drawable/ic_headset_black_24dp"
-                     />
-             </LinearLayout>
              <ImageView
                  android:id="@+id/image"
                  android:layout_width="match_parent"
@@ -212,55 +155,63 @@
 
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_alignParentBottom="true"
-        android:paddingTop="4dp"
-        android:background="#CC3772"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
         >
-            <Button
-                android:id="@+id/btn_record"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:paddingLeft="4dp"
-                android:text="REC"
-                android:textColor="#fff"
-                android:drawableLeft="@drawable/ic_brightness_1_black_24dp"
-                android:background="#6A122E"
-                />
 
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:orientation="horizontal"
-            android:background="@drawable/border_btn_background"
-            android:weightSum="3"
+            android:layout_toLeftOf="@id/btn_record"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/circle_back_btn_new_topic"
+            android:gravity="center"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             >
             <ImageView
-
+                android:id="@+id/imageView"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_photo_camera_black_24dp"
+                android:layout_alignParentRight="true"
+                />
+            <ImageView
+                android:layout_alignParentLeft="true"
                 android:id="@+id/back_random"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginRight="8dp"
                 android:src="@drawable/ic_invert_colors_black_24dp"/>
             <ImageView
                 android:id="@+id/gallery"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginRight="8dp"
-                android:src="@drawable/ic_image_black_24dp"/>
+                android:src="@drawable/ic_image_black_24dp"
+                android:layout_toLeftOf="@id/imageView"
+                />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="32dp"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/ic_photo_camera_black_24dp" />
-        </LinearLayout>
-    </LinearLayout>
+
+        </RelativeLayout>
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:id="@+id/btn_record"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:background="@drawable/circel_mic"
+            android:src="@drawable/ic_mic_black_24dp"
+            />
+
+    </RelativeLayout>
 </RelativeLayout>
