@@ -83,6 +83,7 @@ public class Database {
         }
     }
 
+
     private static DbHelper helper = null;
     private static Object sync = new Object();
     private Context context;
@@ -213,11 +214,12 @@ public class Database {
             String description = cursor.getString(descriptionIndex);
             String userName = cursor.getString(userNameIndex);
             String imageUrl = cursor.getString(urlIndex);
+            String audioUrl = cursor.getString(urlIndex); // add audioUrl here
             String userId = cursor.getString(userIdIndex);
             Long time = cursor.getLong(timeIndex);
             Long numMessages=cursor.getLong(numMessagesIndex);
 
-            topic = new Topic(id, title, description, userName, imageUrl, userId, time,numMessages);
+            topic = new Topic(id, title, description, userName, imageUrl, audioUrl, userId, time,numMessages);
         }
 
         closeDatabase();

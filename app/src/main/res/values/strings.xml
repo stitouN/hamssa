@@ -114,6 +114,18 @@
 
     <string name="you_dont_have_permission">You don\'t have permission</string>
     <string name="you_are_not_the_owner_of_this_topic">You are not the owner of this topic</string>
+    <string name="Change_the_language">Change the language</string>
+    <string name="lan_arabic">Arabic</string>
+    <string name="lan_English">English</string>
+    <string name="lan_Spanish">Spanish</string>
+    <string name="lan_French">French</string>
+    <string-array name="listOfLanguages">
+        <item>@string/lan_English</item>
+        <item>@string/lan_arabic</item>
+        <item>@string/lan_Spanish</item>
+        <item>@string/lan_French</item>
+    </string-array>
+
 
 
 </resources>

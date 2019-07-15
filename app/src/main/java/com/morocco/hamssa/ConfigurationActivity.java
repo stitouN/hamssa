@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
@@ -15,15 +16,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +53,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ConfigurationActivity extends AppCompatActivity {
@@ -58,12 +63,17 @@ public class ConfigurationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuration);
 
+
         setupActionBar();
         setupProfileImage();
         setupEmail();
         setupNotifications();
         setupLogout();
+        SpinnerChangeLanguage();
+
     }
+
+
 
     private void setupActionBar(){
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -324,5 +334,39 @@ public class ConfigurationActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void SpinnerChangeLanguage(){
+        Spinner sp = (Spinner)findViewById(R.id.spinner_lang);
+
+        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String lanName = adapterView.getItemAtPosition(i).toString();
+                if(lanName.equals("Arabic") || lanName.equals("Arabe") || lanName.equals("Árabe"))
+                SetLocale("ar");
+                if(lanName.equals("French") || lanName.equals("Francés") || lanName.equals("الفرنسية"))
+                    SetLocale("fr");
+                if(lanName.equals("Spanishُ") || lanName.equals("الإسبانية") || lanName.equals("Espagnol"))
+                    SetLocale("es");
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+     public void SetLocale(String lan){
+        Locale myLocale = new Locale(lan);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        Configuration conf = getResources().getConfiguration();
+        conf.locale = myLocale;
+        getResources().updateConfiguration(conf,dm);
+        Intent refresh = new Intent(ConfigurationActivity.this, MainActivity.class);
+        startActivity(refresh);
     }
 }

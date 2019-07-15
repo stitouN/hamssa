@@ -103,5 +103,16 @@
     <string name="back">Volver</string>
     <string name="continue_anyway">Continuar igualmente</string>
     <string name="account_login_banner">Puedes loguearte con un email si ya te has logueado previamente y has enlazado tu cuenta a este email</string>
+    <string name="email_not_found">El correo electrónico no encontrado</string>
+    <string name="email_not_valid">Correo electrónico no válido</string>
+    <string name="you_are_not_the_owner_of_this_topic">Usted no es el propietario de este tema</string>
+    <string name="you_dont_have_permission">no tienes permiso</string>
+    <string name="password_recovered">Una nueva contraseña ha sido enviada a su e-mail</string>
+    <string name="error_sending_email">Error que envía al correo electrónico</string>
+    <string name="Change_the_language">Cambie la lengua</string>
+    <string name="lan_English">Inglés</string>
+    <string name="lan_French">Francés</string>
+    <string name="lan_Spanish">Español</string>
+    <string name="lan_arabic">Árabe</string>
 
 </resources>

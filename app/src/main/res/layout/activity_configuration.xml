@@ -103,6 +103,34 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:background="#777777"/>
+        <LinearLayout
+            android:id="@+id/language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:text="@string/Change_the_language"/>
+
+            <Spinner
+                android:id="@+id/spinner_lang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/listOfLanguages"
+                >
+            </Spinner>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="#777777"/>
 
         <LinearLayout
             android:id="@+id/notify_following"

@@ -71,11 +71,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:paddingBottom="4dp"
-
                 android:orientation="horizontal">
-
                 <LinearLayout
                     android:id="@+id/image_wrapper"
                     android:layout_width="wrap_content"
@@ -126,42 +123,17 @@
                             android:background="?android:attr/selectableItemBackground"
                             android:src="@drawable/ic_expand"/>
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:layout_below="@+id/userName_wrapper"
-                        android:text="This is a placeholder for a text"/>
-
-                    <TextView
-                        android:id="@+id/numMessages"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/num_comments_background"
-                        android:paddingBottom="2dp"
-                        android:paddingTop="2dp"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        android:layout_marginTop="4dp"
-                        android:textColor="#ffffff"
-                        android:textStyle="bold"
-                        android:layout_below="@+id/description"
-                        android:layout_alignParentRight="true"
-                        android:text="1622"/>
-
                 </RelativeLayout>
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/content_image_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#bbbbbb"
+                android:layout_height="208dp"
+                android:background="#F1F1F1"
                 android:layout_marginTop="4dp"
-                android:padding="1dp">
+                >
 
                 <ImageView
                     android:id="@+id/content_image"
@@ -169,7 +141,35 @@
                     android:layout_height="208dp"
                     android:adjustViewBounds="false"
                     android:scaleType="centerCrop" />
-            </LinearLayout>
+                <TextView
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:id="@+id/numMessages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/num_comments_background"
+                    android:gravity="bottom|end"
+                    android:paddingRight="4dp"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:text="10+"/>
+
+                <TextView
+                    android:id="@+id/description"
+                    android:maxLines="8"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textMultiLine"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="#fff"
+                    android:shadowColor="#999999"
+                    android:text="This is a placeholder for a text"/>
+
+
+
+            </RelativeLayout>
 
             <!--
             <LinearLayout

@@ -37,15 +37,17 @@ public class Topic {
     String description;
     String userName;
     String imageUrl;
+    String audioUrl;
     String userId;
     Long time;
     Long numMessages;
-    public Topic(String id, String title, String description, String userName, String imageUrl, String userId, Long time,Long numMessages){
+    public Topic(String id, String title, String description, String userName, String imageUrl, String audioUrl, String userId, Long time,Long numMessages){
         this.id = id;
         this.title = title;
         this.description = description;
         this.userName = userName;
         this.imageUrl = imageUrl;
+        this.audioUrl = audioUrl;
         this.userId = userId;
         this.time = time;
         this.numMessages=numMessages;
@@ -63,6 +65,7 @@ public class Topic {
         return new Database(context).getTopicContent(id);
     }
     public String getImageUrl(){ return imageUrl; }
+    public String getAudioUrl(){ return audioUrl;}
     public boolean isPersonal(){
         return userName != null && !userName.isEmpty();
     }
