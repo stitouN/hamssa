@@ -346,53 +346,53 @@ public class NewTopicActivity extends AppCompatActivity {
 
     }
 
-
+    Uri ImageOrAudio_Url;
     private void uploadImageOrAudio(final String child, String path, final String id,final String titre, final String contenu ){
 
-        Uri fileUri = null;
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Uploading...");
 
-        final Context context = this;
-
         StorageReference ref = storageReference.child(child + UUID.randomUUID().toString());
 
-        if(path != null){
-             fileUri = Uri.fromFile(new File(path));
-        }
-        ref.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        progressDialog.dismiss();
-                        String downloadUrl = task.getResult().toString();
-                        if(child == "image/") {
-                            sendAndFinish(id, titre, contenu, downloadUrl, "", null);
-                        }else{
-                            sendAndFinish(id, titre, "", "", downloadUrl, null);
-                        }
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
+        if(path != null) {
+            ImageOrAudio_Url = Uri.fromFile(new File(path));
 
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                .getTotalByteCount());
-                        progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                    }
-                });
+            ref.putFile(ImageOrAudio_Url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            progressDialog.dismiss();
+                            String downloadUrl = task.getResult().toString();
+                            if (child == "images/") {
+                                sendAndFinish(id, titre, contenu, downloadUrl, "", null);
+                            } else {
+                                sendAndFinish(id, titre, "", "", downloadUrl, null);
+                            }
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                            .getTotalByteCount());
+                    progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                }
+            });
+        }else{
+            Toast.makeText(getApplicationContext(), "File path is null", Toast.LENGTH_SHORT).show();
+        }
 
 
     }
