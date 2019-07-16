@@ -357,7 +357,7 @@ public class NewTopicActivity extends AppCompatActivity {
 
         StorageReference ref = storageReference.child(child + UUID.randomUUID().toString());
 
-        if(path != null) {
+        if(path != "") {
             ImageOrAudio_Url = Uri.fromFile(new File(path));
 
             ref.putFile(ImageOrAudio_Url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -391,7 +391,7 @@ public class NewTopicActivity extends AppCompatActivity {
                 }
             });
         }else{
-            Toast.makeText(getApplicationContext(), "File path is null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "File path is null:"+path, Toast.LENGTH_SHORT).show();
         }
 
 
