@@ -31,6 +31,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
@@ -80,18 +82,16 @@ public class NewTopicActivity extends AppCompatActivity {
     public static final String ARG_TOPIC_ID = "arg_topic_id";
     Topic topic;
     private String mCurrentPhotoPath;
-    private int REQUEST_PERMISSION_REQ_CODE = 2;
-    private boolean isRecording = false;
     String AudioSavePathInDevice = null;
     MediaRecorder mediaRecorder;
     public static final int RequestPermissionCode = 1;
     Chronometer chronometer;
     SoundPool soundPool = null;
     int soundId;
-    boolean loaded, isPlaying = false;
-    Button btn_record;
-    ImageButton btn_play_pause;
+    boolean loaded;
+    ImageButton btn_record, btn_play_sound;
     ImageView imageView;
+    boolean record = false, isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +99,10 @@ public class NewTopicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_topic);
 
         imageView = (ImageView)findViewById(R.id.image);
+        btn_record = (ImageButton)findViewById(R.id.btn_record);
+        btn_play_sound = (ImageButton)findViewById(R.id.btn_play_sound);
+        chronometer = (Chronometer)findViewById(R.id.chronometer_start_record);
+
 
         if (getIntent().hasExtra(ARG_TOPIC_ID)) {
             String topicId = getIntent().getStringExtra(ARG_TOPIC_ID);
@@ -109,8 +113,62 @@ public class NewTopicActivity extends AppCompatActivity {
         setupActionBar();
         setupInputs();
 
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!record) {
+                    findViewById(R.id.layour_btn_images_cols).setVisibility(View.GONE);
+                    findViewById(R.id.card_view_play_sound).setVisibility(View.GONE);
+                    findViewById(R.id.layout_strat_record).setVisibility(View.VISIBLE);
+                    btn_record.setImageResource(R.drawable.ic_stop_black_24dp);
+                    record = true;
+                    startRecording();
+                }else{
+                    findViewById(R.id.layout_strat_record).setVisibility(View.GONE);
+                    findViewById(R.id.card_view_play_sound).setVisibility(View.VISIBLE);
+                    findViewById(R.id.layour_btn_images_cols).setVisibility(View.VISIBLE);
+                    btn_record.setImageResource(R.drawable.ic_mic_black_24dp);
+                    record = false;
+                    stopRecording();
+                }
+            }
+        });
 
+        findViewById(R.id.btn_remove_sound).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation fade_out_card_play_sound = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+                findViewById(R.id.card_view_play_sound).setAnimation(fade_out_card_play_sound);
+                findViewById(R.id.card_view_play_sound).setVisibility(View.GONE);
+            }
+        });
+        findViewById(R.id.btn_cancel_record).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopRecording();
+                findViewById(R.id.layout_strat_record).setVisibility(View.GONE);
+                btn_record.setImageResource(R.drawable.ic_mic_black_24dp);
+                //findViewById(R.id.card_view_play_sound).setVisibility(View.VISIBLE);
+                findViewById(R.id.layour_btn_images_cols).setVisibility(View.VISIBLE);
+            }
+        });
 
+        btn_play_sound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isPlaying && mediaRecorder != null){
+                    btn_play_sound.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                    isPlaying = true;
+                    PlayAndChangeVoice();
+                }else{
+                    btn_play_sound.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
+                    isPlaying = false;
+                    StopSoundPlaying();
+
+                }
+
+            }
+        });
 
     }
 
@@ -134,7 +192,7 @@ public class NewTopicActivity extends AppCompatActivity {
     private int AUDIO_REC_CODE = 3;
     Uri audioUrl;
     Uri imageUrl;
-    File image;
+
 
 
 
@@ -209,6 +267,8 @@ public class NewTopicActivity extends AppCompatActivity {
             }
         });
 
+
+
     }// end method SetupInputs()
 
     @Override
@@ -256,12 +316,6 @@ public class NewTopicActivity extends AppCompatActivity {
 
     private void send() {
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading...");
-
         EditText editText1 = (EditText) findViewById(R.id.description);
         final String description = editText1.getText().toString();
 
@@ -269,75 +323,76 @@ public class NewTopicActivity extends AppCompatActivity {
         final String content = editText2.getText().toString();
 
         final String topicId = topic != null ? topic.getId() : null;
-        //  final String imageUrl = topic != null ? topic.getImageUrl() : null;
+
         if (!description.isEmpty()) {
-            if (imageUrl == null) {
+
+            if(imageUrl == null && audioUrl == null) {
+
                 sendAndFinish(topicId, description, content, "", "", null);
-            } else {
-                final Context context = this;
-                StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-               /* StorageMetadata metadata = new StorageMetadata.Builder()
-                        .setCustomMetadata("clientId", Constants.CLIENT_TOKEN)
-                        .build();
-                ref.*/
-                if (mCurrentPhotoPath != null) {
-                    imageUrl = Uri.fromFile(new File(mCurrentPhotoPath));
-                }
-                ref.putFile(imageUrl)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                                taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        progressDialog.dismiss();
-                                        String downloadUrl = task.getResult().toString();
-                                        sendAndFinish(topicId, "", content, downloadUrl, "", null);
-                                    }
-                                });
-
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                progressDialog.dismiss();
-
-                            }
-                        })
-                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                        .getTotalByteCount());
-                                progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                            }
-                        });
-              /*  new ImageUploader(this, false, new ImageUploader.OnReceiveJSON() {
-                    @Override
-                    public void onJSON(JSONObject jsonObject) {
-                        Integer errorStringId = null;
-                        if(jsonObject != null) {
-                            try {
-                                String imageUrl = jsonObject.getString("servingURL");
-                                String blobKey = jsonObject.getString("blobKey");
-                                sendAndFinish(topicId, description, content, imageUrl, blobKey);
-                            } catch (JSONException e) {
-                                errorStringId = R.string.connection_error;
-                            }
-                        }else{
-                            errorStringId = R.string.connection_error;
-                        }
-                        if(errorStringId != null){
-                            Toast.makeText(context, context.getString(errorStringId), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }).upload(bitmap);*/
             }
+            if(mCurrentPhotoPath != null && AudioSavePathInDevice == null){
+
+                uploadImageOrAudio("images/",mCurrentPhotoPath,topicId,description,content);
+
+            }else{
+                uploadImageOrAudio("sounds/",AudioSavePathInDevice,topicId,description,"");
+            }
+
         }else{
             Toast.makeText(this, getString(R.string.empty_description), Toast.LENGTH_SHORT).show();
         }
+
+
+    }
+
+
+    private void uploadImageOrAudio(final String child, String path, final String id,final String titre, final String contenu ){
+
+        Uri fileUri = null;
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading...");
+
+        final Context context = this;
+
+        StorageReference ref = storageReference.child(child + UUID.randomUUID().toString());
+
+        if(path != null){
+             fileUri = Uri.fromFile(new File(path));
+        }
+        ref.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        progressDialog.dismiss();
+                        String downloadUrl = task.getResult().toString();
+                        if(child == "image/") {
+                            sendAndFinish(id, titre, contenu, downloadUrl, "", null);
+                        }else{
+                            sendAndFinish(id, titre, "", "", downloadUrl, null);
+                        }
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                .getTotalByteCount());
+                        progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                    }
+                });
 
 
     }
@@ -354,6 +409,7 @@ public class NewTopicActivity extends AppCompatActivity {
         data.put("title", description);
         data.put("content", content);
         data.put("image_url", imageUrl);
+        data.put("audio_Url", audioUrl);
         //params.add(new NameValuePair("blob_key", blobKey));
         Constants.TASK task = Constants.TASK.CREATE_TOPIC;
         final ProgressDialog progressDialog = ProgressDialog.show(this, getString(R.string.please_wait), getString(R.string.connecting_with_server), true);
@@ -426,12 +482,10 @@ public class NewTopicActivity extends AppCompatActivity {
     }
 
     //Audio Recording...
-
     private void startRecording() {
         if (checkPermission()) {
 
-            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice.3gp";
-
+            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice.aac";
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
             MediaRecorderReady();
@@ -471,8 +525,8 @@ public class NewTopicActivity extends AppCompatActivity {
     public void MediaRecorderReady() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AAC_ADTS);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
 
@@ -501,11 +555,17 @@ public class NewTopicActivity extends AppCompatActivity {
 
     }
 
-    private void changeVoice(){
+    private void PlayAndChangeVoice(){
         if (loaded) {
-            soundPool.play(soundId, 100, 100, 1, 0, 1.3f);
+            soundPool.play(soundId, 100, 100, 0, 1, 1.4f);
         };
     }
+    private void StopSoundPlaying(){
+        soundPool.stop(soundId);
+    }
+
+
+
 
 }
 
