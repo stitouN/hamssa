@@ -195,6 +195,7 @@ public class TopicsFragment extends Fragment {
                             db.removeTopic(topicId);
                             db.addTopics(jsonArray);
                             cursor = db.getTopics(type);
+                            success=true;
                         }
                     }catch(JSONException ex){
 
