@@ -409,7 +409,7 @@ public class NewTopicActivity extends AppCompatActivity {
         data.put("title", description);
         data.put("content", content);
         data.put("image_url", imageUrl);
-        data.put("audio_Url", audioUrl);
+        data.put("audioUrl", audioUrl);
         //params.add(new NameValuePair("blob_key", blobKey));
         Constants.TASK task = Constants.TASK.CREATE_TOPIC;
         final ProgressDialog progressDialog = ProgressDialog.show(this, getString(R.string.please_wait), getString(R.string.connecting_with_server), true);
