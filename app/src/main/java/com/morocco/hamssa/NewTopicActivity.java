@@ -485,7 +485,7 @@ public class NewTopicActivity extends AppCompatActivity {
     private void startRecording() {
         if (checkPermission()) {
 
-            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice.aac";
+            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice.3gp";
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
             MediaRecorderReady();
@@ -525,8 +525,8 @@ public class NewTopicActivity extends AppCompatActivity {
     public void MediaRecorderReady() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AAC_ADTS);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
 
