@@ -326,17 +326,17 @@ public class NewTopicActivity extends AppCompatActivity {
 
         if (!description.isEmpty()) {
 
-            if(imageUrl == null && audioUrl == null) {
+            if(imageUrl == null) {
+                if (audioUrl == null) {
 
-                sendAndFinish(topicId, description, content, "", "", null);
+                    sendAndFinish(topicId, description, content, "", "", null);
 
-            }
-            if(mCurrentPhotoPath != null && AudioSavePathInDevice == null){
+                } else {
+                    uploadImageOrAudio("sounds/", AudioSavePathInDevice, topicId, description, "");
+                }
+            }else {
 
-                uploadImageOrAudio("images/",mCurrentPhotoPath,topicId,description,content);
-
-            }else{
-                uploadImageOrAudio("sounds/",AudioSavePathInDevice,topicId,description,"");
+                uploadImageOrAudio("images/", mCurrentPhotoPath, topicId, description, content);
             }
 
         }else{
