@@ -56,9 +56,9 @@
 
     <string name="my_posts">My posts</string>
     <string name="title_activity_web">WebActivity</string>
-    <string name="new_topic">New announcement</string>
-    <string name="topic_description_hint">Short description</string>
-    <string name="topic_content_hint">Here you can write without length restriction</string>
+    <string name="new_topic">New post</string>
+    <string name="topic_description_hint">Title</string>
+    <string name="topic_content_hint">WHAT\'S ON YOUR MIND?</string>
     <string name="action_send">Send</string>
     <string name="email_address">e-mail address</string>
 
@@ -119,6 +119,8 @@
     <string name="lan_English">English</string>
     <string name="lan_Spanish">Spanish</string>
     <string name="lan_French">French</string>
+    <string name="the_languages">Languages</string>
+    <string name="choose_languages">Choose language</string>
     <string-array name="listOfLanguages">
         <item>@string/lan_English</item>
         <item>@string/lan_arabic</item>

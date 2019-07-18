@@ -1,6 +1,7 @@
 package com.morocco.hamssa;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -69,7 +71,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         setupEmail();
         setupNotifications();
         setupLogout();
-        SpinnerChangeLanguage();
+        ButtonChangeLanguage();
 
     }
 
@@ -336,37 +338,63 @@ public class ConfigurationActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void SpinnerChangeLanguage(){
-        Spinner sp = (Spinner)findViewById(R.id.spinner_lang);
+    private void ButtonChangeLanguage(){
 
-        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        findViewById(R.id.btn_change_language).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                String lanName = adapterView.getItemAtPosition(i).toString();
-                if(lanName.equals("Arabic") || lanName.equals("Arabe") || lanName.equals("Árabe"))
-                SetLocale("ar");
-                if(lanName.equals("French") || lanName.equals("Francés") || lanName.equals("الفرنسية"))
-                    SetLocale("fr");
-                if(lanName.equals("Spanishُ") || lanName.equals("الإسبانية") || lanName.equals("Espagnol"))
-                    SetLocale("es");
-
+            public void onClick(View view) {
+                ShowChangeLanguageDialog();
             }
+        });
 
+
+
+    }
+
+
+
+    private void ShowChangeLanguageDialog() {
+
+        final String[] listLanguages = getResources().getStringArray(R.array.listOfLanguages);
+        AlertDialog.Builder  mBuilder = new AlertDialog.Builder(ConfigurationActivity.this);
+        mBuilder.setTitle(R.string.choose_languages);
+        mBuilder.setSingleChoiceItems(listLanguages, -1, new DialogInterface.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                if(i == 0){
+                    ((MainActivity)getApplicationContext()).SetLocale("en");
+                    ((MainActivity)getApplicationContext()).recreate();
+
+
+                }
+                if(i == 1){
+                    ((MainActivity)getApplicationContext()).SetLocale("ar");
+                    ((MainActivity)getApplicationContext()).recreate();
+
+                }
+                if(i == 2){
+
+                   ((MainActivity)getApplicationContext()).SetLocale("fr");
+                    ((MainActivity)getApplicationContext()).recreate();
+
+                }
+                if(i == 3){
+
+                    ((MainActivity)getApplicationContext()).SetLocale("es");
+                    ((MainActivity)getApplicationContext()).recreate();
+
+                }
+
+                dialogInterface.dismiss();
 
             }
         });
+
+        AlertDialog mDialog = mBuilder.create();
+        mDialog.show();
+
     }
 
-     public void SetLocale(String lan){
-        Locale myLocale = new Locale(lan);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        Configuration conf = getResources().getConfiguration();
-        conf.locale = myLocale;
-        getResources().updateConfiguration(conf,dm);
-        Intent refresh = new Intent(ConfigurationActivity.this, MainActivity.class);
-        startActivity(refresh);
-    }
+
 }

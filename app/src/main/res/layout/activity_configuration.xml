@@ -116,13 +116,15 @@
                 android:textSize="16dp"
                 android:text="@string/Change_the_language"/>
 
-            <Spinner
-                android:id="@+id/spinner_lang"
+            <Button
+                android:id="@+id/btn_change_language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/listOfLanguages"
-                >
-            </Spinner>
+                android:text="@string/the_languages"
+                android:drawableStart="@drawable/ic_language_black_24dp"
+                android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+                android:background="@android:color/transparent"
+                />
 
         </LinearLayout>
         <LinearLayout

@@ -52,7 +52,7 @@
     <string name="name_max_length">" الحد الأقصى لطول الاسم هو 16 حرفًا"</string>
     <string name="name_min_length">"يجب أن يحتوي اسمك على 4 أحرف على الأقل "</string>
     <string name="new_content">"محتوى جديد "</string>
-    <string name="new_topic">"إعلان جديد "</string>
+    <string name="new_topic">منشور جديد</string>
     <string name="news">أخبار</string>
     <string name="options_about_this_topic">"خيارات حول هذا البند "</string>
     <string name="others">"الآخرين "</string>
@@ -96,4 +96,6 @@
     <string name="lan_French">الفرنسية</string>
     <string name="lan_Spanish">الإسبانية</string>
     <string name="lan_arabic">العربية</string>
+    <string name="choose_languages">تحديد اللغة</string>
+    <string name="the_languages">اللغات</string>
 </resources>

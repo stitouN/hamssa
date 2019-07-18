@@ -1,14 +1,17 @@
 package com.morocco.hamssa;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +25,16 @@ import com.morocco.hamssa.share.ShareWindow;
 import com.morocco.hamssa.utils.Constants;
 import com.morocco.hamssa.utils.Utils;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements MessagesFragment.OnMessageClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //SetLocale("ar");
+        LoadLocale();
         setContentView(R.layout.activity_main);
-
         if(isLogged(this)) {
             setupActionBar();
             setupViewPager();
@@ -44,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
             startActivity(intent);
             finish();
         }
+
+
     }
 
     public static boolean isLogged(Context context){
@@ -123,6 +131,27 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    public void SetLocale(String lang){
+        Locale myLocale = new Locale(lang);
+        Locale.setDefault(myLocale);
+        Configuration conf = new Configuration();
+        conf.locale = myLocale;
+        getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
+
+        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
+        editor.putString("My_lang", lang);
+        editor.apply();
+    }
+
+
+    public void LoadLocale(){
+        SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
+        String language = preferences.getString("My_lang", "");
+        SetLocale(language);
+    }
+
 
 
 }

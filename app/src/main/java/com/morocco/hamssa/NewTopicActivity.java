@@ -15,10 +15,12 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -89,19 +91,24 @@ public class NewTopicActivity extends AppCompatActivity {
     SoundPool soundPool = null;
     int soundId;
     boolean loaded;
+    Random rnd;
     ImageButton btn_record, btn_play_sound;
     ImageView imageView;
     boolean record = false, isPlaying = false;
+    EditText editText;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_topic);
 
+
+        editText = (EditText)findViewById(R.id.content);
         imageView = (ImageView)findViewById(R.id.image);
-        btn_record = (ImageButton)findViewById(R.id.btn_record);
-        btn_play_sound = (ImageButton)findViewById(R.id.btn_play_sound);
-        chronometer = (Chronometer)findViewById(R.id.chronometer_start_record);
+        //btn_record = (ImageButton)findViewById(R.id.btn_record);
+        //btn_play_sound = (ImageButton)findViewById(R.id.btn_play_sound);
+        //chronometer = (Chronometer)findViewById(R.id.chronometer_start_record);
 
 
         if (getIntent().hasExtra(ARG_TOPIC_ID)) {
@@ -112,64 +119,6 @@ public class NewTopicActivity extends AppCompatActivity {
 
         setupActionBar();
         setupInputs();
-
-        btn_record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!record) {
-                    findViewById(R.id.layour_btn_images_cols).setVisibility(View.GONE);
-                    findViewById(R.id.card_view_play_sound).setVisibility(View.GONE);
-                    findViewById(R.id.layout_strat_record).setVisibility(View.VISIBLE);
-                    btn_record.setImageResource(R.drawable.ic_stop_black_24dp);
-                    record = true;
-                    startRecording();
-                }else{
-                    findViewById(R.id.layout_strat_record).setVisibility(View.GONE);
-                    findViewById(R.id.card_view_play_sound).setVisibility(View.VISIBLE);
-                    findViewById(R.id.layour_btn_images_cols).setVisibility(View.VISIBLE);
-                    btn_record.setImageResource(R.drawable.ic_mic_black_24dp);
-                    record = false;
-                    stopRecording();
-                }
-            }
-        });
-
-        findViewById(R.id.btn_remove_sound).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Animation fade_out_card_play_sound = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-                findViewById(R.id.card_view_play_sound).setAnimation(fade_out_card_play_sound);
-                findViewById(R.id.card_view_play_sound).setVisibility(View.GONE);
-            }
-        });
-        findViewById(R.id.btn_cancel_record).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopRecording();
-                findViewById(R.id.layout_strat_record).setVisibility(View.GONE);
-                btn_record.setImageResource(R.drawable.ic_mic_black_24dp);
-                //findViewById(R.id.card_view_play_sound).setVisibility(View.VISIBLE);
-                findViewById(R.id.layour_btn_images_cols).setVisibility(View.VISIBLE);
-            }
-        });
-
-        btn_play_sound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!isPlaying && mediaRecorder != null){
-                    btn_play_sound.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-                    isPlaying = true;
-                    PlayAndChangeVoice();
-                }else{
-                    btn_play_sound.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-                    isPlaying = false;
-                    StopSoundPlaying();
-
-                }
-
-            }
-        });
-
     }
 
     private void setupActionBar() {
@@ -186,21 +135,7 @@ public class NewTopicActivity extends AppCompatActivity {
     }
 
 
-    Bitmap bitmap = null;
-    private static final int TAKE_PICTURE = 1;
-    private static final int PICK_IMAGE_REQUEST = 2;
-    private int AUDIO_REC_CODE = 3;
-    Uri audioUrl;
-    Uri imageUrl;
-
-
-
-
-    private void pickImage(){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, TAKE_PICTURE);
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setupInputs() {
         if (topic != null) {
             TextView description = (TextView) findViewById(R.id.description);
@@ -267,9 +202,38 @@ public class NewTopicActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_change_text_color).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+
+                 editText.setTextColor(color);
+                 editText.setHintTextColor(color);
+
+            }
+        });
+
+
+        findViewById(R.id.back1).setClipToOutline(true);
+        findViewById(R.id.back2).setClipToOutline(true);
+        findViewById(R.id.back3).setClipToOutline(true);
+
+
 
 
     }// end method SetupInputs()
+
+    Bitmap bitmap = null;
+    private static final int TAKE_PICTURE = 1;
+    private static final int PICK_IMAGE_REQUEST = 2;
+    private int AUDIO_REC_CODE = 3;
+    Uri audioUrl;
+    Uri imageUrl;
+
+    private void pickImage(){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, TAKE_PICTURE);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -296,7 +260,6 @@ public class NewTopicActivity extends AppCompatActivity {
             }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_new_topic, menu);
@@ -316,32 +279,30 @@ public class NewTopicActivity extends AppCompatActivity {
 
     private void send() {
 
-        EditText editText1 = (EditText) findViewById(R.id.description);
-        final String description = editText1.getText().toString();
+        //EditText editText1 = (EditText) findViewById(R.id.description);
+        //final String description = editText1.getText().toString();
 
         EditText editText2 = (EditText) findViewById(R.id.content);
         final String content = editText2.getText().toString();
 
         final String topicId = topic != null ? topic.getId() : null;
 
-        if (!description.isEmpty()) {
+        //if (!description.isEmpty()) {
 
             if(imageUrl == null) {
                 if (audioUrl == null) {
 
-                    sendAndFinish(topicId, description, content, "", "", null);
+                    sendAndFinish(topicId, "", content, "", "", null);
 
                 } else {
-                    uploadImageOrAudio("sounds/", AudioSavePathInDevice, topicId, description, "");
+                    uploadImageOrAudio("sounds/", AudioSavePathInDevice, topicId, "", "");
                 }
             }else {
 
-                uploadImageOrAudio("images/", mCurrentPhotoPath, topicId, description, content);
+                uploadImageOrAudio("images/", mCurrentPhotoPath, topicId, "", content);
             }
 
-        }else{
-            Toast.makeText(this, getString(R.string.empty_description), Toast.LENGTH_SHORT).show();
-        }
+
 
 
     }
@@ -390,16 +351,12 @@ public class NewTopicActivity extends AppCompatActivity {
                     progressDialog.setMessage("Uploaded " + (int) progress + "%");
                 }
             });
-        }else{
-            Toast.makeText(getApplicationContext(), "File path is null:"+path, Toast.LENGTH_SHORT).show();
+        //}else{
+         //   Toast.makeText(getApplicationContext(), "File path is null:"+path, Toast.LENGTH_SHORT).show();
         }
 
 
     }
-
-
-
-
 
     private void sendAndFinish(String topicId, String description, String content, String imageUrl, String audioUrl, String blobKey) {
         List<NameValuePair> params = HTTPTask.getParams(this);
