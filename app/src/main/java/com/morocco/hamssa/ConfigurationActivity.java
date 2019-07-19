@@ -368,6 +368,8 @@ public class ConfigurationActivity extends AppCompatActivity {
                         if(i == 2) saveLanguage("es");
                         if(i == 3) saveLanguage("fr");
 
+
+
                     }
                 });
 
@@ -375,6 +377,7 @@ public class ConfigurationActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
+                ((MainActivity)getBaseContext()).recreate();
                 dialogInterface.dismiss();
             }
         });

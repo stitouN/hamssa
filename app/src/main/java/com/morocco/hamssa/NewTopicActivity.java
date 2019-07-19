@@ -10,7 +10,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
@@ -24,9 +27,11 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -79,7 +84,7 @@ import java.util.UUID;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class NewTopicActivity extends AppCompatActivity {
+public class NewTopicActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String ARG_TOPIC_ID = "arg_topic_id";
     Topic topic;
@@ -96,6 +101,7 @@ public class NewTopicActivity extends AppCompatActivity {
     ImageView imageView;
     boolean record = false, isPlaying = false;
     EditText editText;
+    Animation fade_out;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -103,9 +109,10 @@ public class NewTopicActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_topic);
 
-
+        rnd = new Random();
         editText = (EditText)findViewById(R.id.content);
         imageView = (ImageView)findViewById(R.id.image);
+        fade_out = AnimationUtils.loadAnimation(this, R.anim.fade_out);
         //btn_record = (ImageButton)findViewById(R.id.btn_record);
         //btn_play_sound = (ImageButton)findViewById(R.id.btn_play_sound);
         //chronometer = (Chronometer)findViewById(R.id.chronometer_start_record);
@@ -205,19 +212,19 @@ public class NewTopicActivity extends AppCompatActivity {
         findViewById(R.id.btn_change_text_color).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                  int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
 
-                 editText.setTextColor(color);
-                 editText.setHintTextColor(color);
+                  editText.setTextColor(color);
+                  editText.setHintTextColor(color);
 
             }
         });
 
-
-        findViewById(R.id.back1).setClipToOutline(true);
-        findViewById(R.id.back2).setClipToOutline(true);
-        findViewById(R.id.back3).setClipToOutline(true);
-
+        for(int i=1; i<14; i++) {
+            ImageButton back =(ImageButton)findViewById(R.id.back+i);
+            back.setClipToOutline(true);
+            back.setOnClickListener(this);
+        }
 
 
 
@@ -522,8 +529,26 @@ public class NewTopicActivity extends AppCompatActivity {
     }
 
 
+    ImageButton btnBack = null;
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onClick(View view) {
+        /*switch(view.getId()){
+            case R.id.back1 :
+            break;
+            case R.id.back2 : findViewById(R.id.image).setBackgroundResource(R.drawable.image2);
+                break;
+            case R.id.back3 : findViewById(R.id.image).setBackgroundResource(R.drawable.image3);
+                break;*/
 
 
+        btnBack = (ImageButton)findViewById(view.getId());
+        findViewById(R.id.image).setBackground(btnBack.getDrawable());
+        findViewById(R.id.image).setAnimation(fade_out);
+
+
+
+    }
 }
 
 
