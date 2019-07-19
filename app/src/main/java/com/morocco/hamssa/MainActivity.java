@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //SetLocale("ar");
-        LoadLocale();
+        SharedPreferences preferences = getSharedPreferences("Settings", 0);
+        SetLocale(preferences.getString("My_lang", ""));
         setContentView(R.layout.activity_main);
         if(isLogged(this)) {
             setupActionBar();
@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
     }
 
 
+
+
     public void SetLocale(String lang){
         Locale myLocale = new Locale(lang);
         Locale.setDefault(myLocale);
@@ -140,17 +142,10 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         conf.locale = myLocale;
         getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
 
-        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
-        editor.putString("My_lang", lang);
-        editor.apply();
     }
 
 
-    public void LoadLocale(){
-        SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
-        String language = preferences.getString("My_lang", "");
-        SetLocale(language);
-    }
+
 
 
 

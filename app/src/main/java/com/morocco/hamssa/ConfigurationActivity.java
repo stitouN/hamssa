@@ -356,44 +356,41 @@ public class ConfigurationActivity extends AppCompatActivity {
     private void ShowChangeLanguageDialog() {
 
         final String[] listLanguages = getResources().getStringArray(R.array.listOfLanguages);
-        AlertDialog.Builder  mBuilder = new AlertDialog.Builder(ConfigurationActivity.this);
-        mBuilder.setTitle(R.string.choose_languages);
-        mBuilder.setSingleChoiceItems(listLanguages, -1, new DialogInterface.OnClickListener() {
+        final String[] listValue = {};
+        AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationActivity.this);
+        builder.setTitle(getString(R.string.choose_languages))
+                .setSingleChoiceItems(listLanguages, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        if(i == 0) savelanguage("en");
+                        if(i == 1) savelanguage("ar");
+                        if(i == 2) savelanguage("fr");
+                        if(i == 3) savelanguage("es");
+
+                    }
+                });
+
+        builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                if(i == 0){
-                    ((MainActivity)getApplicationContext()).SetLocale("en");
-                    ((MainActivity)getApplicationContext()).recreate();
-
-
-                }
-                if(i == 1){
-                    ((MainActivity)getApplicationContext()).SetLocale("ar");
-                    ((MainActivity)getApplicationContext()).recreate();
-
-                }
-                if(i == 2){
-
-                   ((MainActivity)getApplicationContext()).SetLocale("fr");
-                    ((MainActivity)getApplicationContext()).recreate();
-
-                }
-                if(i == 3){
-
-                    ((MainActivity)getApplicationContext()).SetLocale("es");
-                    ((MainActivity)getApplicationContext()).recreate();
-
-                }
-
+                Toast.makeText(ConfigurationActivity.this, "Your Selected " +listValue[0], Toast.LENGTH_SHORT).show();
                 dialogInterface.dismiss();
-
             }
         });
 
-        AlertDialog mDialog = mBuilder.create();
-        mDialog.show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
+
+
+
+    public void savelanguage(String lang){
+        SharedPreferences.Editor editor = getSharedPreferences("Settings",0).edit();
+        editor.putString("My_lang", lang);
+        editor.commit();
     }
 
 
