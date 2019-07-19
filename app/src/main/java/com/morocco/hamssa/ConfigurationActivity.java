@@ -365,8 +365,8 @@ public class ConfigurationActivity extends AppCompatActivity {
 
                         if(i == 0) saveLanguage("en");
                         if(i == 1) saveLanguage("ar");
-                        if(i == 2) saveLanguage("fr");
-                        if(i == 3) saveLanguage("es");
+                        if(i == 2) saveLanguage("es");
+                        if(i == 3) saveLanguage("fr");
 
                     }
                 });
