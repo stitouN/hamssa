@@ -114,5 +114,8 @@
     <string name="lan_English">Inglés</string>
     <string name="lan_Spanish">Español</string>
     <string name="lan_arabic">Árabe</string>
+    <string name="choose_languages">Seleccionar idioma</string>
+    <string name="text_ok">OK</string>
+    <string name="the_languages">Idiomas</string>
 
 </resources>

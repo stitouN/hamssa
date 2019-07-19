@@ -96,4 +96,7 @@
     <string name="lan_French">Français</string>
     <string name="lan_Spanish">Espagnol</string>
     <string name="lan_arabic">Arabe</string>
+    <string name="choose_languages">Sélectionnez la langue</string>
+    <string name="text_ok">OK</string>
+    <string name="the_languages">Langues</string>
 </resources>

@@ -363,19 +363,18 @@ public class ConfigurationActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-                        if(i == 0) savelanguage("en");
-                        if(i == 1) savelanguage("ar");
-                        if(i == 2) savelanguage("fr");
-                        if(i == 3) savelanguage("es");
+                        if(i == 0) saveLanguage("en");
+                        if(i == 1) saveLanguage("ar");
+                        if(i == 2) saveLanguage("fr");
+                        if(i == 3) saveLanguage("es");
 
                     }
                 });
 
-        builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.text_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                Toast.makeText(ConfigurationActivity.this, "Your Selected " +listValue[0], Toast.LENGTH_SHORT).show();
                 dialogInterface.dismiss();
             }
         });
@@ -387,7 +386,7 @@ public class ConfigurationActivity extends AppCompatActivity {
 
 
 
-    public void savelanguage(String lang){
+    public void saveLanguage(String lang){
         SharedPreferences.Editor editor = getSharedPreferences("Settings",0).edit();
         editor.putString("My_lang", lang);
         editor.commit();
