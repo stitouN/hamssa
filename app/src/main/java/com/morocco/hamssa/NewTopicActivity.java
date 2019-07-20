@@ -33,6 +33,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -63,6 +64,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.morocco.hamssa.data.Database;
+import com.morocco.hamssa.entities.RecordVoice;
 import com.morocco.hamssa.entities.Topic;
 import com.morocco.hamssa.utils.Constants;
 import com.morocco.hamssa.utils.HTTPTask;
@@ -91,20 +93,17 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     public static final String ARG_TOPIC_ID = "arg_topic_id";
     Topic topic;
     private String mCurrentPhotoPath;
-    String AudioSavePathInDevice = null;
+    String audioPath = null;
     MediaRecorder mediaRecorder;
     public static final int RequestPermissionCode = 1;
-    Chronometer chronometer;
-    SoundPool soundPool = null;
-    int soundId;
-    boolean loaded;
     Random rnd;
-    ImageButton btn_record, btn_play_sound;
     ImageView imageView;
-    boolean record = false, isPlaying = false;
-    EditText editText;
+    boolean isRecording = false, isPlaying = false;
+    EditText contentText;
     final Context context = this;
     Animation fade_out;
+    RecordVoice recordVoice;
+    CardView player;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -113,12 +112,16 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_new_topic);
 
         rnd = new Random();
-        editText = (EditText)findViewById(R.id.content);
+
+        //Tree elements Content topic
+        contentText = (EditText)findViewById(R.id.content);
         imageView = (ImageView)findViewById(R.id.image);
+        player = (CardView)findViewById(R.id.player);
+
+        //animation
         fade_out = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-        //btn_record = (ImageButton)findViewById(R.id.btn_record);
-        //btn_play_sound = (ImageButton)findViewById(R.id.btn_play_sound);
-        //chronometer = (Chronometer)findViewById(R.id.chronometer_start_record);
+        //create object from class RecordVoice;
+        recordVoice = new RecordVoice();
 
         if (getIntent().hasExtra(ARG_TOPIC_ID)) {
             String topicId = getIntent().getStringExtra(ARG_TOPIC_ID);
@@ -151,18 +154,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             description.setText(topic.getDescription());
             final TextView content = (TextView) findViewById(R.id.content);
             content.setText(topic.getContent(this));
-            /*topic.fetchContent(this, new Topic.OnContentListener() {
-                @Override
-                public void onContent(boolean success, String contentString) {
-                    if (success) {
-                        if(contentString != null && !contentString.isEmpty()) {
-                            content.setText(contentString);
-                        }
-                    } else {
-                        Toast.makeText(NewTopicActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });*/
 
             String url = topic.getImageUrl();
             if (url != null && !url.isEmpty()) {
@@ -176,7 +167,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
             }
 
-            //this for audio
+            //get sound from topic for edit
             String audioUrl = topic.getAudioUrl();
             if(audioUrl != null && !audioUrl.isEmpty()){
                 //show audio player
@@ -216,8 +207,8 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(View view) {
                   int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
 
-                  editText.setTextColor(color);
-                  editText.setHintTextColor(color);
+                  contentText.setTextColor(color);
+                  contentText.setHintTextColor(color);
 
             }
         });
@@ -230,11 +221,53 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 final Dialog dialog = new Dialog(context);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.custom);
-                ImageButton dialogButton = (ImageButton) dialog.findViewById(R.id.dialog_exit);
                 // if button is clicked, close the custom dialog
-                dialogButton.setOnClickListener(new View.OnClickListener() {
+                dialog.findViewById(R.id.dialog_exit).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.findViewById(R.id.btn_start_stop_record).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if(!isRecording){
+                            audioPath = Environment.getExternalStorageDirectory()+ "/voice.3gpp";
+                            recordVoice.setAudioPath(audioPath);
+                            try {
+                                recordVoice.startRecording();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            isRecording = true;
+                        }else {
+                            recordVoice.stopRecording();
+                            isRecording = false;
+                        }
+
+                    }
+                });
+                dialog.findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(recordVoice.getAudioPath() != null){
+                            //show player in content
+                            imageUrl = null;
+                            imageView.setVisibility(View.GONE);
+                            contentText.setVisibility(View.GONE);
+                            player.setVisibility(View.VISIBLE);
+                            Toast.makeText(NewTopicActivity.this, "voice saved",Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(NewTopicActivity.this, "please record voice",Toast.LENGTH_SHORT).show();
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        recordVoice.deleteFile();
                         dialog.dismiss();
                     }
                 });
@@ -253,12 +286,10 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
     }// end method SetupInputs()
 
-    Bitmap bitmap = null;
     private static final int TAKE_PICTURE = 1;
     private static final int PICK_IMAGE_REQUEST = 2;
-    private int AUDIO_REC_CODE = 3;
-    Uri audioUrl;
     Uri imageUrl;
+    Uri audioUrl;
 
     private void pickImage(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -308,24 +339,18 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void send() {
-
-        //EditText editText1 = (EditText) findViewById(R.id.description);
-        //final String description = editText1.getText().toString();
-
-        EditText editText2 = (EditText) findViewById(R.id.content);
-        final String content = editText2.getText().toString();
-
+        final String content = contentText.getText().toString();
         final String topicId = topic != null ? topic.getId() : null;
 
-        //if (!description.isEmpty()) {
 
             if(imageUrl == null) {
-                if (audioUrl == null) {
+                if (recordVoice.getAudioPath() == null) {
 
                     sendAndFinish(topicId, "", content, "", "", null);
 
                 } else {
-                    uploadImageOrAudio("sounds/", AudioSavePathInDevice, topicId, "", "");
+                    audioUrl = Uri.fromFile(new File(recordVoice.getAudioPath()));
+                    uploadImageOrAudio("sounds/", audioPath, topicId, "", "");
                 }
             }else {
 
@@ -468,54 +493,12 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         this.sendBroadcast(intent);
     }
 
-    //Audio Recording...
-    private void startRecording() {
-        if (checkPermission()) {
 
-            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice.3gp";
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            chronometer.start();
-            MediaRecorderReady();
 
-            try {
-                mediaRecorder.prepare();
-                mediaRecorder.start();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            ActivityCompat.requestPermissions(NewTopicActivity.this, new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
-        }
 
-    }
 
-    private void stopRecording() {
 
-        mediaRecorder.stop();
 
-        chronometer.stop();
-        chronometer.setBase(SystemClock.elapsedRealtime());
-
-        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-        soundId = soundPool.load(AudioSavePathInDevice, 1);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                loaded = true;
-            }
-        });
-
-    }
-
-    public void MediaRecorderReady() {
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        mediaRecorder.setOutputFile(AudioSavePathInDevice);
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -533,22 +516,11 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
-
     public boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
         int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
         return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
 
-
-    }
-
-    private void PlayAndChangeVoice(){
-        if (loaded) {
-            soundPool.play(soundId, 100, 100, 0, 1, 1.4f);
-        };
-    }
-    private void StopSoundPlaying(){
-        soundPool.stop(soundId);
     }
 
 
@@ -556,20 +528,12 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onClick(View view) {
-        /*switch(view.getId()){
-            case R.id.back1 :
-            break;
-            case R.id.back2 : findViewById(R.id.image).setBackgroundResource(R.drawable.image2);
-                break;
-            case R.id.back3 : findViewById(R.id.image).setBackgroundResource(R.drawable.image3);
-                break;*/
-
-
+        mCurrentPhotoPath = null;
+        ImageView image = (ImageView)findViewById(R.id.image);
         btnBack = (ImageButton)findViewById(view.getId());
-        findViewById(R.id.image).setBackground(btnBack.getDrawable());
-        findViewById(R.id.image).setAnimation(fade_out);
-
-
+        image.setImageBitmap(null);
+        image.destroyDrawingCache();
+        image.setBackground(btnBack.getDrawable());
 
     }
 }

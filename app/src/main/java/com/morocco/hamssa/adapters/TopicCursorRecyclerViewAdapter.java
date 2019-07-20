@@ -233,9 +233,12 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
         void onExpandClick(String itemId);
         void onLongClick(String itemId);
     }
+
     OnItemClickListener onItemClickListener;
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
         this.onItemClickListener = onItemClickListener;
     }
+
+
 
 }
