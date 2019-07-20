@@ -42,7 +42,7 @@
             >
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/White"
                 >
                 //Start Header
@@ -156,38 +156,119 @@
                 </LinearLayout>
                 //end Header
 
-                //Start Content
-                <ImageView
+                <RelativeLayout
                     android:layout_below="@id/header"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:id="@+id/image"
-                    android:background="@drawable/image1"
-                    />
-                <EditText
-                    android:layout_below="@id/header"
-                    android:id="@+id/content"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:hint="WHAT'S ON YOUR MIND?"
-                    android:textColorHint="@color/White"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:maxLines="8"
-                    android:autoSizeMaxTextSize="24sp"
-                    android:autoSizeMinTextSize="10sp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:textColor="@color/White"
+                    android:layout_height="250dp"
+                    >
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/image"
+                        android:background="@drawable/image1"
+                        />
+                    <EditText
+                        android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/what_is_on_your_mind"
+                        android:textColorHint="@color/WhiteSmoke"
+                        android:gravity="center"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textColor="@color/White"
+                        />
 
-                    />
-                //End content
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/player"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="8dp"
+                        android:layout_centerInParent="true"
+                        app:cardElevation="4dp"
+                        android:visibility="gone"
+                        >
+
+                        <Spinner
+                            android:layout_gravity="top|start"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="28dp"
+                            android:entries="@array/listOfLanguages"
+                         />
+                        <ImageButton
+                            android:id="@+id/btn_close_player"
+                            android:layout_gravity="top|end"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@drawable/close_border"
+                            android:src="@drawable/ic_close_black_24dp"
+                            android:paddingLeft="7dp"
+                            android:paddingBottom="4dp"
+                            />
+                        <LinearLayout
+                            android:layout_marginTop="28dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            >
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_headset_black_24dp"
+                                />
+                            <ImageButton
+                                android:id="@+id/btn_play_pause"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_play_arrow_black_24dp"
+                                />
+                            <SeekBar
+                                android:id="@+id/seek_bar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="4dp"
+                                android:layout_marginRight="4dp"
+                                />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/time_create_record"
+                            android:layout_gravity="bottom|end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="23:00"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginRight="4dp"
+                            />
+                        <Chronometer
+                            android:id="@+id/chronometer_player"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00:35"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="124dp"
+                            android:layout_marginLeft="124dp"
+                            android:layout_marginBottom="2dp"
+                            android:textColor="@color/Gray"
+                            />
+
+                    </android.support.v7.widget.CardView>
 
 
+                </RelativeLayout>
 
             </RelativeLayout>
+
         </ScrollView>
 
         //Start Images scrolling

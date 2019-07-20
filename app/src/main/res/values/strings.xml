@@ -122,6 +122,7 @@
     <string name="the_languages">Languages</string>
     <string name="choose_languages">Choose language</string>
     <string name="text_ok">OK</string>
+    <string name="what_is_on_your_mind">WHAT\'S ON YOUR MIND?</string>
     <string-array name="listOfLanguages">
         <item>@string/lan_English</item>
         <item>@string/lan_arabic</item>
