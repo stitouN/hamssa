@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="310dp"
+    android:layout_height="wrap_content"
     android:paddingStart="4dp"
     android:paddingLeft="4dp"
     android:paddingEnd="4dp"
@@ -155,7 +155,6 @@
                    android:shadowDy="1"
                    android:shadowRadius="3"
                    android:text="This is a placeholder for a text"
-                   android:autoSizeTextType="uniform"
 
                    />
 
@@ -163,33 +162,25 @@
            </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="2"
-                android:gravity="center_vertical"
-                android:background="@color/WhiteSmoke"
-                >
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    >
+                android:layout_height="38dp"
 
-                </LinearLayout>
+                android:gravity="center_vertical"
+                >
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:gravity="center"
+                    android:gravity="end"
                     >
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Comments"
+                        android:layout_height="match_parent"
+                        android:text="comments"
                         android:textColor="@color/Gray"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
+                        android:gravity="center"
                         />
                     <TextView
                         android:layout_alignParentRight="true"

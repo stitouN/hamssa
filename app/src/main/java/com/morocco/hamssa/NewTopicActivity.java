@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -202,6 +203,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
+        //button change color content text
         findViewById(R.id.btn_change_text_color).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,14 +227,21 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 dialog.findViewById(R.id.dialog_exit).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        recordVoice.deleteFile();
                         dialog.dismiss();
                     }
                 });
-                dialog.findViewById(R.id.btn_start_stop_record).setOnClickListener(new View.OnClickListener() {
+                final ImageButton btnRec = (ImageButton)dialog.findViewById(R.id.btn_start_stop_record);
+                final Chronometer chronometer = (Chronometer)dialog.findViewById(R.id.chronometer);
+                btnRec.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                         if(!isRecording){
+                            btnRec.setImageResource(R.drawable.ic_stop_black_24dp);
+                            dialog.findViewById(R.id.bottom_ly).setVisibility(View.GONE);
+                            chronometer.setBase(SystemClock.elapsedRealtime());
+                            chronometer.start();
                             audioPath = Environment.getExternalStorageDirectory()+ "/voice.3gpp";
                             recordVoice.setAudioPath(audioPath);
                             try {
@@ -242,6 +251,9 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                             }
                             isRecording = true;
                         }else {
+                            btnRec.setImageResource(R.drawable.ic_fiber_manual_record_black_24dp);
+                            dialog.findViewById(R.id.bottom_ly).setVisibility(View.VISIBLE);
+                            chronometer.stop();
                             recordVoice.stopRecording();
                             isRecording = false;
                         }
@@ -251,16 +263,12 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 dialog.findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(recordVoice.getAudioPath() != null){
-                            //show player in content
                             imageUrl = null;
                             imageView.setVisibility(View.GONE);
                             contentText.setVisibility(View.GONE);
                             player.setVisibility(View.VISIBLE);
                             Toast.makeText(NewTopicActivity.this, "voice saved",Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(NewTopicActivity.this, "please record voice",Toast.LENGTH_SHORT).show();
-                        }
+
                         dialog.dismiss();
                     }
                 });
@@ -269,6 +277,12 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                     public void onClick(View view) {
                         recordVoice.deleteFile();
                         dialog.dismiss();
+                    }
+                });
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        Toast.makeText(NewTopicActivity.this, "cancel", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -541,7 +555,8 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View view) {
                 recordVoice.deleteFile();
-                //animation player
+                audioPath = null;
+                player.setAnimation(fade_out);
                 player.setVisibility(View.GONE);
                 imageView.setVisibility(View.VISIBLE);
                 contentText.setVisibility(View.VISIBLE);

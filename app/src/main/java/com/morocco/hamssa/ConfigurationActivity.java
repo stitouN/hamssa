@@ -353,10 +353,10 @@ public class ConfigurationActivity extends AppCompatActivity {
 
 
 
+    boolean selected = false;
     private void ShowChangeLanguageDialog() {
 
         final String[] listLanguages = getResources().getStringArray(R.array.listOfLanguages);
-        final String[] listValue = {};
         AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationActivity.this);
         builder.setTitle(getString(R.string.choose_languages))
                 .setSingleChoiceItems(listLanguages, -1, new DialogInterface.OnClickListener() {
@@ -367,9 +367,7 @@ public class ConfigurationActivity extends AppCompatActivity {
                         if(i == 1) saveLanguage("ar");
                         if(i == 2) saveLanguage("es");
                         if(i == 3) saveLanguage("fr");
-
-
-
+                        selected = true;
                     }
                 });
 
@@ -377,7 +375,10 @@ public class ConfigurationActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
+                if(selected){
                 ((MainActivity)getBaseContext()).recreate();
+                }
+                selected = false;
                 dialogInterface.dismiss();
             }
         });
