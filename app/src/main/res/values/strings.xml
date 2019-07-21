@@ -123,11 +123,20 @@
     <string name="choose_languages">Choose language</string>
     <string name="text_ok">OK</string>
     <string name="what_is_on_your_mind">WHAT\'S ON YOUR MIND?</string>
+    <string name="typeA">Type A</string>
+    <string name="typeB">Type B</string>
+    <string name="typeD">Type D</string>
     <string-array name="listOfLanguages">
         <item>@string/lan_English</item>
         <item>@string/lan_arabic</item>
         <item>@string/lan_Spanish</item>
         <item>@string/lan_French</item>
+    </string-array>
+    <string-array name="typeOfVoices">
+        <item>@string/typeA</item>
+        <item>@string/typeB</item>
+        <item>@string/typeD</item>
+
     </string-array>
 
 

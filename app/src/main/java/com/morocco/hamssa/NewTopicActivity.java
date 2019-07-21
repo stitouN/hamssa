@@ -283,6 +283,10 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         }
 
 
+        //call controllPlayer()
+        controllPlayer();
+
+
 
     }// end method SetupInputs()
 
@@ -494,12 +498,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-
-
-
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -534,6 +532,39 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         image.setImageBitmap(null);
         image.destroyDrawingCache();
         image.setBackground(btnBack.getDrawable());
+
+    }
+
+    private void controllPlayer(){
+
+        findViewById(R.id.btn_close_player).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recordVoice.deleteFile();
+                //animation player
+                player.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
+                contentText.setVisibility(View.VISIBLE);
+            }
+        });
+
+        findViewById(R.id.btn_play_pause).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isPlaying){
+                    //play sound call method changeVoice(type)
+                    //get type voice from spinner and change voice
+                    //change icon play to pause
+                    //seekbar start
+                    isPlaying = true;
+                }else{
+                    //pause sound
+                    //change icon pause to play
+                    //seekbar stop
+                    isPlaying = false;
+                }
+            }
+        });
 
     }
 }
