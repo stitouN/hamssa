@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.MediaPlayer;
@@ -22,6 +23,7 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -44,11 +46,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,7 +99,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     Topic topic;
     private String mCurrentPhotoPath;
     String audioPath = null;
-    MediaRecorder mediaRecorder;
     public static final int RequestPermissionCode = 1;
     Random rnd;
     ImageView imageView;
@@ -105,6 +108,15 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     Animation fade_out;
     RecordVoice recordVoice;
     CardView player;
+    private int REQUEST_PERMISSION_REQ_CODE=2;
+    Spinner spinnerType;
+    String typeVoice;
+    ImageButton btn_paly_pause;
+    SoundPool soundPool;
+    int soundId;
+    long elapsedMillis;
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -114,10 +126,11 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
         rnd = new Random();
 
-        //Tree elements Content topic
         contentText = (EditText)findViewById(R.id.content);
         imageView = (ImageView)findViewById(R.id.image);
         player = (CardView)findViewById(R.id.player);
+        spinnerType = (Spinner)findViewById(R.id.spinner_type_voice);
+        btn_paly_pause = (ImageButton)findViewById(R.id.btn_play_pause);
 
         //animation
         fade_out = AnimationUtils.loadAnimation(this, R.anim.fade_out);
@@ -176,21 +189,42 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         }
 
         // Take photo from camera
-        findViewById(R.id.imageView).setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                int checkContextCompat = ContextCompat.checkSelfPermission(NewTopicActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-                int pm_pg = PackageManager.PERMISSION_GRANTED;
-                int checkActivityCompat = ActivityCompat.checkSelfPermission(NewTopicActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-                if (checkContextCompat != pm_pg || checkActivityCompat != pm_pg) {
-                    ActivityCompat.requestPermissions(NewTopicActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, TAKE_PICTURE);
-                }else {
-                    pickImage();
+                //Intent intent =  new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                if (ContextCompat.checkSelfPermission(NewTopicActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(NewTopicActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_REQ_CODE);
                 }
+                if (ContextCompat.checkSelfPermission(NewTopicActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED /*&& intent.resolveActivity(getPackageManager()) != null*/) {
+                    // Create the File where the photo should go
+                    /*File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(NewTopicActivity.this,
+                                "com.morocco.hamssa.fileprovider",
+                                photoFile);
 
-             }
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(intent, TAKE_PICTURE);
+
+                    }*/
+
+                    try {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(NewTopicActivity.this, "com.morocco.hamssa.fileprovider", createImageFile()));
+                        startActivityForResult(intent, TAKE_PICTURE);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
         });
 
         // Select Image or photo from gallery
@@ -198,8 +232,12 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onClick(View v) {
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , PICK_IMAGE_REQUEST);
+                Intent intent = new Intent();
+                // Show only images, no videos or anything else
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                // Always show the chooser (if there are multiple options available)
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
             }
         });
 
@@ -242,8 +280,8 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                             dialog.findViewById(R.id.bottom_ly).setVisibility(View.GONE);
                             chronometer.setBase(SystemClock.elapsedRealtime());
                             chronometer.start();
-                            audioPath = Environment.getExternalStorageDirectory()+ "/voice.3gpp";
-                            recordVoice.setAudioPath(audioPath);
+                            audioPath = Environment.getExternalStorageDirectory()+ "/voice.wav";
+                            recordVoice.setOutputFile(audioPath);
                             try {
                                 recordVoice.startRecording();
                             } catch (IOException e) {
@@ -254,6 +292,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                             btnRec.setImageResource(R.drawable.ic_fiber_manual_record_black_24dp);
                             dialog.findViewById(R.id.bottom_ly).setVisibility(View.VISIBLE);
                             chronometer.stop();
+                            elapsedMillis = chronometer.getBase();
                             recordVoice.stopRecording();
                             isRecording = false;
                         }
@@ -268,6 +307,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                             contentText.setVisibility(View.GONE);
                             player.setVisibility(View.VISIBLE);
                             Toast.makeText(NewTopicActivity.this, "voice saved",Toast.LENGTH_SHORT).show();
+                            controlPlayer();
 
                         dialog.dismiss();
                     }
@@ -290,6 +330,22 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                 if(position == 0) typeVoice = "Type 1";
+                 if(position == 1) typeVoice = "Type 2";
+                 if(position == 2) typeVoice = "Type 3";
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         for(int i=1; i<14; i++) {
             ImageButton back =(ImageButton)findViewById(R.id.back+i);
             back.setClipToOutline(true);
@@ -297,8 +353,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         }
 
 
-        //call controllPlayer()
-        controllPlayer();
 
 
 
@@ -309,10 +363,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     Uri imageUrl;
     Uri audioUrl;
 
-    private void pickImage(){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, TAKE_PICTURE);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -321,20 +371,12 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             switch (requestCode){
                 case PICK_IMAGE_REQUEST:
                     imageUrl = data.getData();
-                    Uri selectedImage = data.getData();
-                    imageView.setImageURI(selectedImage);
+                    //Uri selectedImage = data.getData();
+                    imageView.setImageURI(imageUrl);
                     break;
                 case TAKE_PICTURE:
-                    Bundle extra = data.getExtras();
-                    Bitmap btm = (Bitmap) extra.get("data");
-                    imageView.setImageBitmap(btm);
-                    try {
-                        createImageFile();
-                        addPictureToDevice();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
+                    imageUrl = Uri.fromFile(new File(mCurrentPhotoPath));
+                    imageView.setImageURI(imageUrl);
                     break;
             }
     }
@@ -360,22 +402,19 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         final String content = contentText.getText().toString();
         final String topicId = topic != null ? topic.getId() : null;
 
-
-            if(imageUrl == null) {
-                if (recordVoice.getAudioPath() == null) {
+           if(imageUrl == null) {
+                if (recordVoice.getOutputFile() == null) {
 
                     sendAndFinish(topicId, "", content, "", "", null);
 
                 } else {
-                    audioUrl = Uri.fromFile(new File(recordVoice.getAudioPath()));
-                    uploadImageOrAudio("sounds/", audioPath, topicId, "", "");
+
+                    uploadImageOrAudio("sounds/", recordVoice.getOutputFile(), topicId, "", "");
                 }
             }else {
 
                 uploadImageOrAudio("images/", mCurrentPhotoPath, topicId, "", content);
             }
-
-
 
 
     }
@@ -391,10 +430,10 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
         StorageReference ref = storageReference.child(child + UUID.randomUUID().toString());
 
-        if(path != "") {
-            ImageOrAudio_Url = Uri.fromFile(new File(path));
 
-            ref.putFile(ImageOrAudio_Url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        //if(path != "") {
+            //ImageOrAudio_Url = Uri.fromFile(new File(path));
+            ref.putFile(imageUrl).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -402,11 +441,11 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                         public void onComplete(@NonNull Task<Uri> task) {
                             progressDialog.dismiss();
                             String downloadUrl = task.getResult().toString();
-                            if (child == "images/") {
+                            //if (child == "images/") {
                                 sendAndFinish(id, titre, contenu, downloadUrl, "", null);
-                            } else {
-                                sendAndFinish(id, titre, "", "", downloadUrl, null);
-                            }
+                            //} else {
+                          //      sendAndFinish(id, titre, "", "", downloadUrl, null);
+                         //   }
                         }
                     });
                 }
@@ -426,7 +465,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             });
         //}else{
          //   Toast.makeText(getApplicationContext(), "File path is null:"+path, Toast.LENGTH_SHORT).show();
-        }
+       // }
 
 
     }
@@ -549,8 +588,10 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void controllPlayer(){
+    private void controlPlayer(){
 
+        Chronometer  chronometer = (Chronometer)findViewById(R.id.chronometer_player);
+        chronometer.setBase(elapsedMillis);
         findViewById(R.id.btn_close_player).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -567,21 +608,84 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View view) {
                 if(!isPlaying){
-                    //play sound call method changeVoice(type)
-                    //get type voice from spinner and change voice
-                    //change icon play to pause
-                    //seekbar start
+
+                    btn_paly_pause.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                    if(typeVoice == "Type 1") playSound(1.3f);
+                    if(typeVoice == "Type 2") playSound(1.8f);
+                    if(typeVoice == "Type 3") playSound(0.9f);
+
+                    try {
+                        Toast.makeText(NewTopicActivity.this, ""+recordVoice.getCurrentPos(),Toast.LENGTH_SHORT).show();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                btn_paly_pause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
+                            }
+                        },recordVoice.getCurrentPos());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
                     isPlaying = true;
                 }else{
-                    //pause sound
-                    //change icon pause to play
-                    //seekbar stop
+
+                    stopSound();
+                    btn_paly_pause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
                     isPlaying = false;
                 }
             }
         });
 
     }
+
+
+    public void playSound(final float r) {
+
+        Thread streamThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+                soundPool = new SoundPool(1,AudioManager.STREAM_MUSIC, 0);
+                soundId = soundPool.load(recordVoice.getOutputFile(), 1);
+                soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                    @Override
+                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                        soundPool.play(soundId,100, 100, 0, 0, r);
+                    }
+                });
+
+            }
+        });
+
+        streamThread.start();
+
+    }
+
+    private void stopSound(){
+        soundPool.stop(soundId);
+    }
+
+    private void pauseSound(){
+        soundPool.pause(soundId);
+    }
+
+
+    private void GetImagesFromFirebaseStorage(String imageSelected){
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading...");
+
+
+    }
+
+
 }
 
 

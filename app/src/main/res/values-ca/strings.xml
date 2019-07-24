@@ -118,5 +118,9 @@
     <string name="text_ok">OK</string>
     <string name="the_languages">Idiomas</string>
     <string name="what_is_on_your_mind">¿En qué estas pensando?</string>
+    <string name="typeA">Type 1</string>
+    <string name="typeB">Type 2</string>
+    <string name="typeD">Type 3</string>
+    <string name="typeC">Type 3</string>
 
 </resources>

@@ -123,9 +123,9 @@
     <string name="choose_languages">Choose language</string>
     <string name="text_ok">OK</string>
     <string name="what_is_on_your_mind">WHAT\'S ON YOUR MIND?</string>
-    <string name="typeA">Type A</string>
-    <string name="typeB">Type B</string>
-    <string name="typeD">Type D</string>
+    <string name="typeA">Type 1</string>
+    <string name="typeB">Type 2</string>
+    <string name="typeC">Type 3</string>
     <string-array name="listOfLanguages">
         <item>@string/lan_English</item>
         <item>@string/lan_arabic</item>
@@ -135,7 +135,7 @@
     <string-array name="typeOfVoices">
         <item>@string/typeA</item>
         <item>@string/typeB</item>
-        <item>@string/typeD</item>
+        <item>@string/typeC</item>
 
     </string-array>
 

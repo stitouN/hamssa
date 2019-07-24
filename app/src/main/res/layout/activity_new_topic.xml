@@ -194,10 +194,12 @@
                         android:layout_margin="8dp"
                         android:layout_centerInParent="true"
                         app:cardElevation="4dp"
+                        android:layoutDirection="ltr"
                         android:visibility="gone"
                         >
 
                         <Spinner
+                            android:id="@+id/spinner_type_voice"
                             android:layout_gravity="top|start"
                             android:gravity="center"
                             android:layout_width="wrap_content"
@@ -490,7 +492,7 @@
                 android:background="@color/DarkGray"
                 />
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/camera"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@drawable/ic_photo_camera_black_24dp"

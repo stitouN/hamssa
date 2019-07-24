@@ -377,8 +377,8 @@ public class ConfigurationActivity extends AppCompatActivity {
 
                 if(selected){
                 ((MainActivity)getBaseContext()).recreate();
-                }
                 selected = false;
+                }
                 dialogInterface.dismiss();
             }
         });

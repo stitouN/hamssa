@@ -100,4 +100,8 @@
     <string name="the_languages">اللغات</string>
     <string name="text_ok">موافق</string>
     <string name="what_is_on_your_mind">بماذا تفكر؟</string>
+    <string name="typeA">النوع 1</string>
+    <string name="typeB">النوع 2</string>
+    <string name="typeD">النوع 3</string>
+    <string name="typeC">النوع 3</string>
 </resources>
