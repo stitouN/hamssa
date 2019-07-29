@@ -138,6 +138,7 @@ public class Topic {
 
     public boolean isMine(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(Constants.SP.USER_ID, "") == userId;
+        return sp.getString(Constants.SP.USER_ID, "").equals(userId);
     }
+
 }

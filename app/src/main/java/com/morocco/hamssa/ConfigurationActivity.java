@@ -376,7 +376,9 @@ public class ConfigurationActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 if(selected){
-                ((MainActivity)getBaseContext()).recreate();
+                    Intent refresh = new Intent(getBaseContext(), MainActivity.class);
+                    refresh.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getBaseContext().startActivity(refresh);
                 selected = false;
                 }
                 dialogInterface.dismiss();

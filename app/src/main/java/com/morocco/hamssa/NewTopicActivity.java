@@ -61,6 +61,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
@@ -102,7 +104,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     public static final int RequestPermissionCode = 1;
     Random rnd;
     ImageView imageView;
-    boolean isRecording = false, isPlaying = false;
+    boolean isRecording = false, isPlaying = false, isFromActtivityResult = false;
     EditText contentText;
     final Context context = this;
     Animation fade_out;
@@ -115,6 +117,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     SoundPool soundPool;
     int soundId;
     long elapsedMillis;
+
 
 
 
@@ -163,15 +166,17 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setupInputs() {
+
+        //This part for edit topic
         if (topic != null) {
-            TextView description = (TextView) findViewById(R.id.description);
-            description.setText(topic.getDescription());
+            //TextView description = (TextView) findViewById(R.id.description);
+            //description.setText(topic.getDescription());
             final TextView content = (TextView) findViewById(R.id.content);
             content.setText(topic.getContent(this));
 
             String url = topic.getImageUrl();
+            Toast.makeText(NewTopicActivity.this, topic.getImageUrl().toString(), Toast.LENGTH_SHORT).show();
             if (url != null && !url.isEmpty()) {
-                findViewById(R.id.image).setVisibility(View.VISIBLE);
                 ImageView imageView = (ImageView) findViewById(R.id.image);
                 Glide.with(this)
                         .load(topic.getImageUrl())
@@ -181,12 +186,8 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
             }
 
-            //get sound from topic for edit
-            String audioUrl = topic.getAudioUrl();
-            if(audioUrl != null && !audioUrl.isEmpty()){
-                //show audio player
-            }
         }
+        //end part edit topic
 
         // Take photo from camera
 
@@ -198,23 +199,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                     ActivityCompat.requestPermissions(NewTopicActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_REQ_CODE);
                 }
                 if (ContextCompat.checkSelfPermission(NewTopicActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED /*&& intent.resolveActivity(getPackageManager()) != null*/) {
-                    // Create the File where the photo should go
-                    /*File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(NewTopicActivity.this,
-                                "com.morocco.hamssa.fileprovider",
-                                photoFile);
-
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(intent, TAKE_PICTURE);
-
-                    }*/
 
                     try {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -306,6 +290,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                             imageView.setVisibility(View.GONE);
                             contentText.setVisibility(View.GONE);
                             player.setVisibility(View.VISIBLE);
+                            audioUrl = Uri.fromFile(new File(recordVoice.getOutputFile()));
                             Toast.makeText(NewTopicActivity.this, "voice saved",Toast.LENGTH_SHORT).show();
                             controlPlayer();
 
@@ -316,6 +301,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onClick(View view) {
                         recordVoice.deleteFile();
+                        audioUrl = null;
                         dialog.dismiss();
                     }
                 });
@@ -347,14 +333,10 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         });
 
         for(int i=1; i<14; i++) {
-            ImageButton back =(ImageButton)findViewById(R.id.back+i);
+            final ImageButton back =(ImageButton)findViewById(R.id.back+i);
             back.setClipToOutline(true);
             back.setOnClickListener(this);
         }
-
-
-
-
 
     }// end method SetupInputs()
 
@@ -372,11 +354,13 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 case PICK_IMAGE_REQUEST:
                     imageUrl = data.getData();
                     //Uri selectedImage = data.getData();
+                    isFromActtivityResult = true;
                     imageView.setImageURI(imageUrl);
                     break;
                 case TAKE_PICTURE:
                     imageUrl = Uri.fromFile(new File(mCurrentPhotoPath));
                     imageView.setImageURI(imageUrl);
+                    isFromActtivityResult = true;
                     break;
             }
     }
@@ -401,39 +385,60 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     private void send() {
         final String content = contentText.getText().toString();
         final String topicId = topic != null ? topic.getId() : null;
-
-           if(imageUrl == null) {
-                if (recordVoice.getOutputFile() == null) {
-
-                    sendAndFinish(topicId, "", content, "", "", null);
-
-                } else {
-
-                    uploadImageOrAudio("sounds/", recordVoice.getOutputFile(), topicId, "", "");
-                }
-            }else {
-
-                uploadImageOrAudio("images/", mCurrentPhotoPath, topicId, "", content);
-            }
-
-
-    }
-
-    Uri ImageOrAudio_Url;
-    private void uploadImageOrAudio(final String child, String path, final String id,final String titre, final String contenu ){
-
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading...");
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading...");
+        /*if(content != null && !content.isEmpty()){
+            sendAndFinish(topicId, "", content, "", "", null);
+        }else{
+            Toast.makeText(NewTopicActivity.this, "please write some text!", Toast.LENGTH_SHORT).show();
+        }*/
 
-        StorageReference ref = storageReference.child(child + UUID.randomUUID().toString());
+       /*if(imageUrl.toString() != null){
 
+            if(isFromActtivityResult){ //imageUri from gallery or camera
 
-        //if(path != "") {
-            //ImageOrAudio_Url = Uri.fromFile(new File(path));
-            ref.putFile(imageUrl).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
+
+                ref.putFile(imageUrl).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                progressDialog.dismiss();
+                                String downloadUrl = task.getResult().toString();
+                                sendAndFinish(topicId, "", content, downloadUrl, "", null);
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                .getTotalByteCount());
+                        progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                    }
+                });
+            }else{//imageUri from firebase
+                sendAndFinish(topicId, "", content, imageUrl.toString(), "", null);
+            }
+        }else{
+
+        }*/
+
+        //if(audioUrl != null){  //audio from device
+            StorageReference ref = storageReference.child("sounds/" + UUID.randomUUID().toString());
+
+            ref.putFile(audioUrl).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -441,11 +446,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                         public void onComplete(@NonNull Task<Uri> task) {
                             progressDialog.dismiss();
                             String downloadUrl = task.getResult().toString();
-                            //if (child == "images/") {
-                                sendAndFinish(id, titre, contenu, downloadUrl, "", null);
-                            //} else {
-                          //      sendAndFinish(id, titre, "", "", downloadUrl, null);
-                         //   }
+                            sendAndFinish(topicId, "", content, "", downloadUrl, null);
                         }
                     });
                 }
@@ -463,9 +464,9 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                     progressDialog.setMessage("Uploaded " + (int) progress + "%");
                 }
             });
-        //}else{
-         //   Toast.makeText(getApplicationContext(), "File path is null:"+path, Toast.LENGTH_SHORT).show();
+
        // }
+
 
 
     }
@@ -542,15 +543,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         return image;
     }
 
-    private void addPictureToDevice(){
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        intent.setData(contentUri);
-        this.sendBroadcast(intent);
-    }
-
-
+    ///////////////////// for record
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -573,7 +566,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
 
     }
-
+    /////////////
 
     ImageButton btnBack = null;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -585,6 +578,8 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         image.setImageBitmap(null);
         image.destroyDrawingCache();
         image.setBackground(btnBack.getDrawable());
+        GetImagesFromFirebaseStorage(btnBack.getContentDescription().toString());
+        isFromActtivityResult = false;
 
     }
 
@@ -673,17 +668,21 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         soundPool.pause(soundId);
     }
 
-
     private void GetImagesFromFirebaseStorage(String imageSelected){
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
+        storageReference.child("images/"+imageSelected).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                imageUrl = uri;
+            }
+        });
 
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading...");
 
 
     }
+
 
 
 }

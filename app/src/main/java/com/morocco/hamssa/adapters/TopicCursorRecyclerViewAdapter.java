@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -36,25 +38,29 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
         return super.swapCursor(newCursor);
     }
 
-    int idIndex, titleIndex, descriptionIndex, urlIndex, numMessagesIndex, linkIndex, userNameIndex, userImageUrlIndex;
+    int idIndex, titleIndex, descriptionIndex, urlIndex, numMessagesIndex, linkIndex, userNameIndex, userImageUrlIndex, audioUrlIndex;
     public void initIndexes(Cursor cursor){
         if(cursor != null){
             idIndex = cursor.getColumnIndex(BaseColumns._ID);
             titleIndex = cursor.getColumnIndex("title");
             descriptionIndex = cursor.getColumnIndex("description");
             urlIndex = cursor.getColumnIndex("url");
+            audioUrlIndex = cursor.getColumnIndex("audioUrl");
             numMessagesIndex = cursor.getColumnIndex("numMessages");
             linkIndex = cursor.getColumnIndex("linkUrl");
             userNameIndex = cursor.getColumnIndex("userName");
             userImageUrlIndex = cursor.getColumnIndex("userImageUrl");
+
         }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView image, contentImage;
-        public View imageWrapper, link, userNameWrapper, contentImageWrapper, expand;
+        public ImageButton btn_play_pause;
+        public View imageWrapper, link, userNameWrapper, contentImageWrapper, expand, playerWrapper;
         public TextView description, numMessages, title, userName;
         long mLastClickTime = 0;
+        boolean isPlaying = false;
         public ViewHolder(View view){
             super(view);
             description = (TextView) view.findViewById(R.id.description);
@@ -68,6 +74,8 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             contentImage = (ImageView)view.findViewById(R.id.content_image);
             contentImageWrapper = view.findViewById(R.id.content_image_wrapper);
             expand = view.findViewById(R.id.expand);
+            btn_play_pause = (ImageButton) view.findViewById(R.id.btn_play_pause);
+            playerWrapper = view.findViewById(R.id.player_wrapper);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,6 +136,21 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                 }
             });
 
+
+            btn_play_pause.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!isPlaying){
+                        //load sound and change icon
+                        Toast.makeText(context, "sound play", Toast.LENGTH_SHORT).show();
+                        isPlaying = true;
+                    }else{
+                        Toast.makeText(context, "sound stop", Toast.LENGTH_SHORT).show();
+                        isPlaying = false;
+                    }
+                }
+            });
+
         }
     }
 
@@ -180,6 +203,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
         }
 
         viewHolder.contentImageWrapper.setVisibility(View.GONE);
+        viewHolder.playerWrapper.setVisibility(View.GONE);
         if(personal){
             String userImageUrl = cursor.getString(userImageUrlIndex);
             if(userImageUrl == null || userImageUrl.isEmpty()){
@@ -206,6 +230,12 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                         //.centerCrop()
                         .into(viewHolder.contentImage);
             }
+            //String audioUrl = cursor.getString(audioUrlIndex);
+            /*if(audioUrl != null && !audioUrl.isEmpty()){
+                viewHolder.playerWrapper.setVisibility(View.VISIBLE);
+                Toast.makeText(context, audioUrl, Toast.LENGTH_SHORT).show();
+            }*/
+
         }else{
             String url = cursor.getString(urlIndex);
             if(url == null || url.isEmpty()){
@@ -225,6 +255,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
     public String getTopicId(int position){
         Cursor cursor = getItem(position);
         return cursor.getString(idIndex);
+        //return getItem(position).getString(idIndex);
     }
 
     public interface OnItemClickListener{
