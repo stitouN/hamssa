@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         if(isLogged(this)) {
             setupActionBar();
             setupViewPager();
-            setupFABButoon();
+            setupFABButton();
             if(Utils.checkPlayServices(this)){
                 // Start IntentService to register this application with GCM
                 Intent intent = new Intent(this, RegistrationIntentService.class);
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
     }
 
-    private void setupFABButoon(){
+    private void setupFABButton(){
         View fab = findViewById(R.id.fab);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if(sp.getLong(Constants.SP.USER_ROLE, 0) == 1 || Constants.EVERYBODY_CAN_POST){
@@ -145,10 +145,6 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
 
     }
-
-
-
-
 
 
 }

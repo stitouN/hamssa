@@ -57,7 +57,7 @@
     <string name="my_posts">My posts</string>
     <string name="title_activity_web" translatable="false">WebActivity</string>
     <string name="new_topic">New post</string>
-    <string name="topic_description_hint">Title</string>
+    <string name="topic_description_hint">Short description</string>
     <string name="topic_content_hint">WHAT\'S ON YOUR MIND?</string>
     <string name="action_send">Send</string>
     <string name="email_address">e-mail address</string>
@@ -126,6 +126,7 @@
     <string name="typeA">Type 1</string>
     <string name="typeB">Type 2</string>
     <string name="typeC">Type 3</string>
+    <string name="empty_title">please write title</string>
     <string-array name="listOfLanguages">
         <item>@string/lan_English</item>
         <item>@string/lan_arabic</item>
@@ -138,7 +139,6 @@
         <item>@string/typeC</item>
 
     </string-array>
-
 
 
 </resources>

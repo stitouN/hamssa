@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.morocco.hamssa" >
+    package="com.morocco.hamssa">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
 
     <permission
         android:name="com.morocco.hamssa.permission.C2D_MESSAGE"
@@ -17,40 +16,42 @@
 
     <uses-permission android:name="com.morocco.hamssa.permission.C2D_MESSAGE" />
 
+    <meta-data
+        android:name="android.support.VERSION"
+        android:value="26.1.0"
+        tools:replace="android:value" />
+
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
-        android:name="MyApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:supportsRtl="true"
-        >
-
-        <activity android:name=".SplashActivity" android:theme="@style/SplashTheme">
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-                android:parentActivityName=".SplashActivity" >
-                <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.morocco.hamssa.SplashActivity" />
+            android:parentActivityName=".SplashActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.morocco.hamssa.SplashActivity" />
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name"></activity>
         <activity
             android:name=".TopicActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".SplashActivity" >
+            android:parentActivityName=".SplashActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.morocco.hamssa.SplashActivity" />
@@ -58,7 +59,7 @@
         <activity
             android:name=".ConfigurationActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".SplashActivity" >
+            android:parentActivityName=".SplashActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.morocco.hamssa.SplashActivity" />
@@ -66,16 +67,14 @@
         <activity
             android:name=".MyMessagesActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".SplashActivity" >
+            android:parentActivityName=".SplashActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.morocco.hamssa.SplashActivity" />
-        </activity>
-
-        <!-- ****************** GCM *********************** -->
+        </activity> <!-- ****************** GCM *********************** -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
@@ -86,28 +85,25 @@
 
         <service
             android:name=".gcm.GcmIntentService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
             android:name=".gcm.MyInstanceIdListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <service
             android:name=".gcm.RegistrationIntentService"
-            android:exported="false" >
-        </service>
-        <!-- ****************** GCM *********************** -->
-
+            android:exported="false"></service> <!-- ****************** GCM *********************** -->
         <activity
             android:name=".WebActivity"
             android:label="@string/title_activity_web"
-            android:parentActivityName=".SplashActivity" >
+            android:parentActivityName=".SplashActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.morocco.hamssa.SplashActivity" />
@@ -115,14 +111,15 @@
         <activity
             android:name=".NewTopicActivity"
             android:label="@string/new_topic"
-            android:parentActivityName=".SplashActivity" >
+            android:parentActivityName=".SplashActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.morocco.hamssa.SplashActivity" />
         </activity>
-        <activity android:name=".TopicDetailActivity"
+        <activity
+            android:name=".TopicDetailActivity"
             android:label="@string/topic_detail"
-            android:parentActivityName=".SplashActivity" >
+            android:parentActivityName=".SplashActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.morocco.hamssa.SplashActivity" />
@@ -135,24 +132,22 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/external_files"></meta-data>
-        </provider>
-        <!-- Beginning of FACEBOOK -->
-        <meta-data android:name="com.facebook.sdk.ApplicationId"  android:value="@string/facebook_app_id"/>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
+                android:resource="@xml/external_files" />
+        </provider> <!-- Beginning of FACEBOOK -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider1643125295948506"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <provider
             android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1643125295948506"
             android:exported="true" />
-        <!-- End of FACEBOOK -->
-
     </application>
-    <meta-data
-        tools:replace="android:value"
-        android:name="android.support.VERSION"
-        android:value="26.1.0" />
+
 </manifest>

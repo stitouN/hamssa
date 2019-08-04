@@ -30,7 +30,7 @@ public class Database {
 
     private static final String SQL_CREATE_TABLE_TOPICS = "CREATE TABLE topics (" +
                     BaseColumns._ID + " TEXT PRIMARY KEY," +
-                    "title TEXT, description TEXT, url TEXT, audioUrl TEXT, linkUrl TEXT, time INTEGER, numMessages INTEGER, removed INTEGER, userId TEXT, userName TEXT, userImageUrl TEXT)";
+                    "title TEXT, description TEXT, url TEXT, linkUrl TEXT, time INTEGER, numMessages INTEGER, removed INTEGER, userId TEXT, userName TEXT, userImageUrl TEXT)";
 
     private static final String SQL_CREATE_TABLE_MESSAGES = "CREATE TABLE messages (" +
             BaseColumns._ID + " TEXT PRIMARY KEY," +
@@ -164,6 +164,7 @@ public class Database {
         Utils.addString(values, jsonObject, "title");
         Utils.addString(values, jsonObject, "description");
         Utils.addString(values, jsonObject, "url");
+        //Utils.addString(values, jsonObject, "audioUrl");
         Utils.addInt(values, jsonObject, "numMessages");
         Utils.addInt(values, jsonObject, "removed");
         Utils.addString(values, jsonObject, "linkUrl");
@@ -205,7 +206,7 @@ public class Database {
         int descriptionIndex = cursor.getColumnIndex("description");
         int userNameIndex = cursor.getColumnIndex("userName");
         int urlIndex = cursor.getColumnIndex("url");
-        int audioUrlIndex = cursor.getColumnIndex("audioUrl");
+        //int audioUrlIndex = cursor.getColumnIndex("audioUrl");
         int userIdIndex = cursor.getColumnIndex("userId");
         int timeIndex = cursor.getColumnIndex("time");
         int numMessagesIndex=cursor.getColumnIndex("numMessages");
@@ -215,12 +216,12 @@ public class Database {
             String description = cursor.getString(descriptionIndex);
             String userName = cursor.getString(userNameIndex);
             String imageUrl = cursor.getString(urlIndex);
-            String audioUrl = cursor.getString(audioUrlIndex); // add audioUrl here
+            //String audioUrl = cursor.getString(audioUrlIndex); // add audioUrl here
             String userId = cursor.getString(userIdIndex);
             Long time = cursor.getLong(timeIndex);
             Long numMessages=cursor.getLong(numMessagesIndex);
 
-            topic = new Topic(id, title, description, userName, imageUrl, audioUrl, userId, time,numMessages);
+            topic = new Topic(id, title, description, userName, imageUrl, userId, time,numMessages);
         }
 
         closeDatabase();
@@ -464,18 +465,21 @@ public class Database {
     /////////////////////////////////////////////////////////////
     // TOPIC EXTRAS
     /////////////////////////////////////////////////////////////
+
     public void setTopicCursor(String topicId, String content){
         setTopicExtra(topicId, "cursor", content);
     }
     public String getTopicCursor(String topicId){
         return getTopicExtra(topicId, "cursor");
     }
+
     public void setTopicContent(String topicId, String content){
         setTopicExtra(topicId, "content", content);
     }
     public String getTopicContent(String topicId){
         return getTopicExtra(topicId, "content");
     }
+
     public void setTopicExtra(String topicId, String key, String value){
         SQLiteDatabase db = openDatabase();
 
@@ -491,7 +495,6 @@ public class Database {
 
         closeDatabase();
     }
-
     public String getTopicExtra(String topicId, String key){
         SQLiteDatabase db = openDatabase();
 

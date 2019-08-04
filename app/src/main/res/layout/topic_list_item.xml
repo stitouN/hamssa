@@ -4,10 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/tools"
-    android:paddingStart="4dp"
-    android:paddingLeft="4dp"
-    android:paddingEnd="4dp"
-    android:paddingRight="4dp">
+   >
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
@@ -17,6 +14,7 @@
         card_view:cardElevation="4dp"
         card_view:contentPadding="8dp"
         card_view:cardUseCompatPadding="true"
+        android:layout_margin="4dp"
         android:background="?android:attr/selectableItemBackground"
         card_view:cardCornerRadius="4dp">
 
@@ -141,7 +139,7 @@
                    android:layout_width="match_parent"
                    android:layout_height="200dp"
                    android:inputType="textMultiLine"
-                   android:textSize="20sp"
+                   android:textSize="18sp"
                    android:textStyle="bold"
                    android:gravity="center"
                    android:textColor="@color/White"

@@ -30,11 +30,12 @@
 
     <RelativeLayout
         android:id="@+id/layout_image"
-        android:visibility="gone"
         android:layout_below="@id/appBarLy"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!-- layout for image with text -->
         <RelativeLayout
+            android:id="@+id/layout_images_text"
             android:layout_above="@id/Bottom"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -50,8 +51,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/White"
                     >
-                    //Start Header
-                    <LinearLayout
+                    <!--Start Header-->
+                    <!--<LinearLayout
                         android:id="@+id/header"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
@@ -158,122 +159,44 @@
                                 </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
-                    //end Header
+                    </LinearLayout>-->
+                    <!-- End Header -->
 
                     <RelativeLayout
-                        android:layout_below="@id/header"
+                        android:layout_alignParentTop="true"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
                         >
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="250dp"
-                            android:scaleType="fitXY"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
                             android:id="@+id/image"
                             android:background="@drawable/image1"
                             />
                         <EditText
                             android:id="@+id/content"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="100dp"
+                            android:layout_height="match_parent"
                             android:background="@android:color/transparent"
                             android:hint="@string/what_is_on_your_mind"
                             android:textColorHint="@color/WhiteSmoke"
-                            android:layout_alignParentBottom="true"
+                            android:layout_centerInParent="true"
                             android:gravity="center"
                             android:maxLength="120"
                             android:autoSizeMinTextSize="10sp"
                             android:autoSizeMaxTextSize="24sp"
                             android:textSize="20dp"
                             android:textStyle="bold"
+                            android:shadowColor="@color/Black"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="3"
                             android:fontFamily="sans-serif-condensed"
                             android:textColor="@color/White"
                             />
 
-                        <android.support.v7.widget.CardView
-                            android:id="@+id/player"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="8dp"
-                            android:layout_centerInParent="true"
-                            app:cardElevation="4dp"
-                            android:layoutDirection="ltr"
-                            android:visibility="gone"
-                            >
-                            <Spinner
-                                android:id="@+id/spinner_type_voice"
-                                android:layout_gravity="top|start"
-                                android:gravity="center"
-                                android:layout_width="wrap_content"
-                                android:layout_height="28dp"
-                                android:entries="@array/typeOfVoices"
-                                />
-                            <ImageButton
-                                android:id="@+id/btn_close_player"
-                                android:layout_gravity="top|end"
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:background="@drawable/close_border"
-                                android:src="@drawable/ic_close_black_24dp"
-                                android:paddingLeft="7dp"
-                                android:paddingBottom="4dp"
-                                />
-                            <LinearLayout
-                                android:layout_marginTop="28dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                >
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/ic_headset_black_24dp"
-                                    />
-                                <ImageButton
-                                    android:id="@+id/btn_play_pause"
-                                    android:layout_marginStart="8dp"
-                                    android:layout_marginLeft="8dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:layout_marginRight="8dp"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/ic_play_arrow_black_24dp"
-                                    />
-                                <SeekBar
-                                    android:id="@+id/seek_bar"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginEnd="4dp"
-                                    android:layout_marginRight="4dp"
-                                    />
-                            </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/time_create_record"
-                                android:layout_gravity="bottom|end"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="23:00"
-                                android:layout_marginBottom="2dp"
-                                android:layout_marginEnd="4dp"
-                                android:layout_marginRight="4dp"
-                                />
-                            <Chronometer
-                                android:id="@+id/chronometer_player"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="00:35"
-                                android:layout_gravity="bottom"
-                                android:layout_marginStart="124dp"
-                                android:layout_marginLeft="124dp"
-                                android:layout_marginBottom="2dp"
-                                android:textColor="@color/Gray"
-                                />
-
-                        </android.support.v7.widget.CardView>
 
 
                     </RelativeLayout>
@@ -472,7 +395,257 @@
             </RelativeLayout>
             //end scrolling Images
         </RelativeLayout>
-        //footer
+        <!-- layout for recording voice -->
+        <RelativeLayout
+            android:layout_above="@id/Bottom"
+            android:id="@+id/layout_record"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/WhiteSmoke"
+            android:visibility="gone"
+            >
+
+
+            <TextView
+                android:id="@+id/tv_reocrd_voice"
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Send anonymous voice "
+                android:textAlignment="center"
+                android:textSize="20dp"
+                android:padding="24dp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@color/WhiteSmoke"
+                android:background="@color/White"
+                android:shadowColor="@color/Black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                />
+            <EditText
+                android:layout_below="@id/tv_reocrd_voice"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/topic_description_hint"
+                android:textSize="16sp"
+                android:layout_margin="16dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/title"
+                android:layout_centerInParent="true"
+                android:id="@+id/player_card"
+                android:layout_margin="16dp"
+                >
+                <Spinner
+                    android:layout_below="@id/title"
+                    android:id="@+id/spinner_type_voice"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/typeOfVoices"
+                    android:popupElevation="2dp"
+                    android:layoutDirection="ltr"
+
+                    />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp"
+                android:layoutDirection="ltr"
+                >
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+
+                        >
+                        <LinearLayout
+                            android:layout_width="80dp"
+                            android:layout_height="match_parent"
+                            android:background="#E61F6F"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="4dp"
+                            >
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_headset"
+                                />
+                            <TextView
+                                android:id="@+id/duration_sound"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="00:30"
+                                android:textColor="@color/White"
+                                android:textSize="16sp"
+                                />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:layout_margin="8dp"
+                            >
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:background="@drawable/border_player"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                >
+
+                                <ImageButton
+                                    android:layout_gravity="start|center_vertical"
+                                    android:id="@+id/play_pause_btn"
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/ic_play_button"
+                                    android:onClick="ButtonsClick"
+
+                                    />
+                                <RelativeLayout
+                                    android:id="@+id/seek_bar_player"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="2"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginRight="16dp"
+                                    android:layout_marginEnd="16dp"
+                                    >
+                                    <SeekBar
+                                        android:id="@+id/seek_bar"
+                                        android:layout_centerInParent="true"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="16dp"
+                                        android:layout_marginEnd="24dp"
+                                        android:progressBackgroundTint="#646464"
+
+                                        />
+                                    <ImageView
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="32dp"
+                                        android:src="@drawable/ic_sound_waves"
+                                        />
+                                </RelativeLayout>
+
+                                <ImageButton
+                                    android:onClick="ButtonsClick"
+                                    android:layout_gravity="end|center_vertical"
+                                    android:id="@+id/btn_close_player"
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/ic_cross_delete_black_circular_button"
+                                    />
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+
+
+            </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_microphone"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="16dp"
+                android:id="@+id/btn_start_send_record"
+                android:onClick="ButtonsClick"
+
+                />
+            <LinearLayout
+                android:id="@+id/layout_record_voice"
+                android:layout_toStartOf="@+id/btn_start_send_record"
+                android:layout_toLeftOf="@id/btn_start_send_record"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/border_record"
+                android:visibility="gone"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border2"
+                    android:padding="8dp"
+                    android:gravity="center_vertical"
+                    >
+                    <Chronometer
+                        android:id="@+id/chronometer_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00:00"
+                        android:textColor="@color/White"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@drawable/ic_record_waves"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical|end"
+                    >
+                    <ImageButton
+                        android:id="@+id/btn_cancel_record"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/ic_cancel_recording"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:onClick="ButtonsClick"
+
+                        />
+                    <ImageButton
+                        android:onClick="ButtonsClick"
+                        android:id="@+id/btn_save_record"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/ic_checked"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+
+        </RelativeLayout>
+        <!-- footer-->
         <LinearLayout
             android:id="@+id/Bottom"
             android:layout_alignParentBottom="true"
@@ -534,7 +707,7 @@
                     android:background="@color/DarkGray"
                     />
                 <ImageView
-                    android:id="@+id/btn_record"
+                    android:id="@+id/btn_mic"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="@drawable/mic_animation"
@@ -543,262 +716,8 @@
             </LinearLayout>
 
         </LinearLayout>
-        //end footer
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/layout_record"
-        android:layout_below="@id/appBarLy"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/WhiteSmoke"
-        >
 
-        <LinearLayout
-            android:id="@+id/text_header"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@color/White"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NEW"
-                android:textSize="24dp"
-                android:layout_marginRight="6dp"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ANNOCCEMENT"
-                android:textSize="24dp"
-                android:textColor="@color/DeepPink"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/description_and_types"
-            android:layout_below="@id/text_header"
-            android:layout_above="@id/player_card"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="32dp"
-            android:orientation="vertical"
-            >
-            
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/topic_description_hint"
-                android:textSize="16sp"
-                />
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:layout_marginTop="24dp"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select the sound type:"
-                    android:textSize="16sp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginEnd="8dp"
-                    />
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/typeOfVoices"
-                    ></Spinner>
-            </LinearLayout>
-
-
-        </LinearLayout>
-        <android.support.v7.widget.CardView
-            android:id="@+id/player_card"
-            android:layout_centerInParent="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardElevation="4dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layoutDirection="ltr"
-            >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-
-                    >
-                    <LinearLayout
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="#E61F6F"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="4dp"
-                        >
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_headset"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="00:30"
-                            android:textColor="@color/White"
-                            android:textSize="12dp"
-                            />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:layout_margin="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:background="@drawable/border_player"
-                            android:gravity="center"
-                            android:padding="8dp"
-                            >
-
-                            <ImageButton
-                                android:layout_gravity="start|center_vertical"
-                                android:id="@+id/play_pause_btn"
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:background="@drawable/ic_play_button"
-                                />
-                            <RelativeLayout
-                                android:id="@+id/seek_bar_player"
-                                android:layout_width="0dp"
-                                android:layout_weight="2"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginEnd="16dp"
-                                >
-                                <SeekBar
-                                    android:layout_centerInParent="true"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginRight="8dp"
-                                    android:layout_marginEnd="8dp"
-                                    />
-                                <ImageView
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_alignParentRight="true"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="32dp"
-                                    android:src="@drawable/ic_sound_waves"
-                                    />
-                            </RelativeLayout>
-
-                            <ImageButton
-                                android:layout_gravity="end|center_vertical"
-                                android:id="@+id/btn_close"
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:background="@drawable/ic_cross_delete_black_circular_button"
-                                />
-
-
-                        </LinearLayout>
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-        </android.support.v7.widget.CardView>
-        <LinearLayout
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-
-            >
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="48dp"
-                android:background="@drawable/back_recording"
-                android:elevation="4dp"
-                >
-                <LinearLayout
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/border2"
-                    android:padding="8dp"
-                    >
-                    <Chronometer
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/White"
-                        android:textSize="18dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:textStyle="bold"
-                        android:text="00:00"
-                        />
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/ic_record_waves"
-                        />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    >
-                    <ImageButton
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/ic_cancel_recording"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginEnd="8dp"
-                        />
-                    <ImageButton
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/ic_checked"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginEnd="8dp"
-                        />
-                </LinearLayout>
-
-            </RelativeLayout>
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/circle_mic_record"
-                android:src="@drawable/ic_microphone"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                />
-            
-        </LinearLayout>
-        
-    </RelativeLayout>
 
 
 </RelativeLayout>

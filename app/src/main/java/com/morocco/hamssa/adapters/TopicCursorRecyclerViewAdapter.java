@@ -56,8 +56,8 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
 
     class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView image, contentImage;
-        public ImageButton btn_play_pause;
-        public View imageWrapper, link, userNameWrapper, contentImageWrapper, expand, playerWrapper;
+        //public ImageButton btn_play_pause;
+        public View imageWrapper, link, userNameWrapper, contentImageWrapper, expand; //playerWrapper;
         public TextView description, numMessages, title, userName;
         long mLastClickTime = 0;
         boolean isPlaying = false;
@@ -74,8 +74,8 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             contentImage = (ImageView)view.findViewById(R.id.content_image);
             contentImageWrapper = view.findViewById(R.id.content_image_wrapper);
             expand = view.findViewById(R.id.expand);
-            btn_play_pause = (ImageButton) view.findViewById(R.id.btn_play_pause);
-            playerWrapper = view.findViewById(R.id.player_wrapper);
+            //btn_play_pause = (ImageButton) view.findViewById(R.id.btn_play_pause);
+            // playerWrapper = view.findViewById(R.id.player_wrapper);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -137,7 +137,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             });
 
 
-            btn_play_pause.setOnClickListener(new View.OnClickListener() {
+            /*btn_play_pause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(!isPlaying){
@@ -149,7 +149,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                         isPlaying = false;
                     }
                 }
-            });
+            });*/
 
         }
     }
@@ -203,7 +203,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
         }
 
         viewHolder.contentImageWrapper.setVisibility(View.GONE);
-        viewHolder.playerWrapper.setVisibility(View.GONE);
+        //viewHolder.playerWrapper.setVisibility(View.GONE);
         if(personal){
             String userImageUrl = cursor.getString(userImageUrlIndex);
             if(userImageUrl == null || userImageUrl.isEmpty()){
@@ -230,8 +230,8 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                         //.centerCrop()
                         .into(viewHolder.contentImage);
             }
-            //String audioUrl = cursor.getString(audioUrlIndex);
-            /*if(audioUrl != null && !audioUrl.isEmpty()){
+            /*String audioUrl = cursor.getString(audioUrlIndex);
+            if(audioUrl != null && !audioUrl.isEmpty()){
                 viewHolder.playerWrapper.setVisibility(View.VISIBLE);
                 Toast.makeText(context, audioUrl, Toast.LENGTH_SHORT).show();
             }*/

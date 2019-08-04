@@ -145,7 +145,6 @@ public class TopicsFragment extends Fragment {
     private void onTopicLongClick(final String topicId){
 
         Topic topic = new Database(getContext()).getTopic(topicId);
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         if(topic.isMine(getContext())){
             CharSequence options[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};

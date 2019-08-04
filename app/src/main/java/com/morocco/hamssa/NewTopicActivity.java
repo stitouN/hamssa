@@ -25,9 +25,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -98,47 +100,39 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class NewTopicActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String ARG_TOPIC_ID = "arg_topic_id";
-    Topic topic;
-    private String mCurrentPhotoPath;
-    String audioPath = null;
-    public static final int RequestPermissionCode = 1;
-    Random rnd;
-    ImageView imageView;
-    boolean isRecording = false, isPlaying = false, isFromActtivityResult = false;
-    EditText contentText;
-    final Context context = this;
-    Animation fade_out;
-    RecordVoice recordVoice;
-    CardView player;
+    private static final int TAKE_PICTURE = 1;
+    private static final int PICK_IMAGE_REQUEST = 2;
     private int REQUEST_PERMISSION_REQ_CODE=2;
-    Spinner spinnerType;
-    String typeVoice;
-    ImageButton btn_paly_pause;
-    SoundPool soundPool;
-    int soundId;
-    long elapsedMillis;
+    private final int AUDIO_REQ_CODE = 1;
+    private String mCurrentPhotoPath;
+    Topic topic;
+    ImageView imageView;
+    EditText contentText;
+    Uri imageUrl;
+    Uri audioUrl;
+    FloatingActionButton fab;
+    Random rnd;
+    RecordVoice recordVoice;
 
-
-
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_topic);
 
-        rnd = new Random();
+         fab = findViewById(R.id.btn_start_send_record);
+         contentText = findViewById(R.id.content);
+         imageView = findViewById(R.id.image);
+         rnd = new Random();
+         recordVoice = new RecordVoice();
 
-        contentText = (EditText)findViewById(R.id.content);
-        imageView = (ImageView)findViewById(R.id.image);
-        player = (CardView)findViewById(R.id.player);
-        spinnerType = (Spinner)findViewById(R.id.spinner_type_voice);
-        btn_paly_pause = (ImageButton)findViewById(R.id.btn_play_pause);
 
-        //animation
-        fade_out = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-        //create object from class RecordVoice;
-        recordVoice = new RecordVoice();
+        for(int i=1; i<14; i++) {
+            final ImageButton back =(ImageButton)findViewById(R.id.back+i);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                back.setClipToOutline(true);
+            }
+            back.setOnClickListener(this);
+        }
 
         if (getIntent().hasExtra(ARG_TOPIC_ID)) {
             String topicId = getIntent().getStringExtra(ARG_TOPIC_ID);
@@ -148,6 +142,72 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
         setupActionBar();
         setupInputs();
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_new_topic, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_send) {
+            send();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK)
+            switch (requestCode){
+                case PICK_IMAGE_REQUEST:
+                    imageUrl = data.getData();
+                    //Uri selectedImage = data.getData();
+                    imageView.setImageURI(imageUrl);
+                    break;
+                case TAKE_PICTURE:
+                    imageUrl = Uri.fromFile(new File(mCurrentPhotoPath));
+                    imageView.setImageURI(imageUrl);
+                    break;
+            }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case AUDIO_REQ_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //start recording
+                } else {
+                    Toast.makeText(this, "Permissions Denied to record audio", Toast.LENGTH_LONG).show();
+                }
+                return;
+        }
+    }
+
+    private boolean requestAudioPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+            //When permission is not granted by user, show them message why this permission is needed.
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
+                Toast.makeText(this, "Please grant permissions to record audio", Toast.LENGTH_LONG).show();
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQ_CODE);
+
+            } else {
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQ_CODE);
+            }
+        }
+
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
     }
 
     private void setupActionBar() {
@@ -164,32 +224,9 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setupInputs() {
 
-        //This part for edit topic
-        if (topic != null) {
-            //TextView description = (TextView) findViewById(R.id.description);
-            //description.setText(topic.getDescription());
-            final TextView content = (TextView) findViewById(R.id.content);
-            content.setText(topic.getContent(this));
-
-            String url = topic.getImageUrl();
-            Toast.makeText(NewTopicActivity.this, topic.getImageUrl().toString(), Toast.LENGTH_SHORT).show();
-            if (url != null && !url.isEmpty()) {
-                ImageView imageView = (ImageView) findViewById(R.id.image);
-                Glide.with(this)
-                        .load(topic.getImageUrl())
-                        .crossFade()
-                        .into(imageView);
-                //findViewById(R.id.new_image).setVisibility(View.GONE);
-
-            }
-
-        }
-        //end part edit topic
-
-        // Take photo from camera
+        LoadTopicForEditing();
 
         findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +248,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        // Select Image or photo from gallery
         findViewById(R.id.gallery).setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -225,251 +261,136 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        //button change color content text
         findViewById(R.id.btn_change_text_color).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                  int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                contentText.setTextColor(color);
+                contentText.setHintTextColor(color);
+            }
+        });
 
-                  contentText.setTextColor(color);
-                  contentText.setHintTextColor(color);
+        findViewById(R.id.btn_mic).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.Bottom).setVisibility(View.GONE);
+                findViewById(R.id.layout_record).setVisibility(View.VISIBLE);
+                findViewById(R.id.layout_images_text).setVisibility(View.GONE);
+
+                fab.setImageResource(R.drawable.ic_microphone);
+                findViewById(R.id.layout_record_voice).setVisibility(View.GONE);
+                findViewById(R.id.player_card).setVisibility(View.GONE);
 
             }
         });
 
-        //btn record
-        findViewById(R.id.btn_record).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // custom dialog
-                final Dialog dialog = new Dialog(context);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.custom);
-                // if button is clicked, close the custom dialog
-                dialog.findViewById(R.id.dialog_exit).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        recordVoice.deleteFile();
-                        dialog.dismiss();
-                    }
-                });
-                final ImageButton btnRec = (ImageButton)dialog.findViewById(R.id.btn_start_stop_record);
-                final Chronometer chronometer = (Chronometer)dialog.findViewById(R.id.chronometer);
-                btnRec.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        if(!isRecording){
-                            btnRec.setImageResource(R.drawable.ic_stop_black_24dp);
-                            dialog.findViewById(R.id.bottom_ly).setVisibility(View.GONE);
-                            chronometer.setBase(SystemClock.elapsedRealtime());
-                            chronometer.start();
-                            audioPath = Environment.getExternalStorageDirectory()+ "/voice.wav";
-                            recordVoice.setOutputFile(audioPath);
-                            try {
-                                recordVoice.startRecording();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            isRecording = true;
-                        }else {
-                            btnRec.setImageResource(R.drawable.ic_fiber_manual_record_black_24dp);
-                            dialog.findViewById(R.id.bottom_ly).setVisibility(View.VISIBLE);
-                            chronometer.stop();
-                            elapsedMillis = chronometer.getBase();
-                            recordVoice.stopRecording();
-                            isRecording = false;
-                        }
-
-                    }
-                });
-                dialog.findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                            imageUrl = null;
-                            imageView.setVisibility(View.GONE);
-                            contentText.setVisibility(View.GONE);
-                            player.setVisibility(View.VISIBLE);
-                            audioUrl = Uri.fromFile(new File(recordVoice.getOutputFile()));
-                            Toast.makeText(NewTopicActivity.this, "voice saved",Toast.LENGTH_SHORT).show();
-                            controlPlayer();
-
-                        dialog.dismiss();
-                    }
-                });
-                dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        recordVoice.deleteFile();
-                        audioUrl = null;
-                        dialog.dismiss();
-                    }
-                });
-                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        Toast.makeText(NewTopicActivity.this, "cancel", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                dialog.show();
-            }
-        });
-
-        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                 if(position == 0) typeVoice = "Type 1";
-                 if(position == 1) typeVoice = "Type 2";
-                 if(position == 2) typeVoice = "Type 3";
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        for(int i=1; i<14; i++) {
-            final ImageButton back =(ImageButton)findViewById(R.id.back+i);
-            back.setClipToOutline(true);
-            back.setOnClickListener(this);
-        }
-
-    }// end method SetupInputs()
-
-    private static final int TAKE_PICTURE = 1;
-    private static final int PICK_IMAGE_REQUEST = 2;
-    Uri imageUrl;
-    Uri audioUrl;
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
-            switch (requestCode){
-                case PICK_IMAGE_REQUEST:
-                    imageUrl = data.getData();
-                    //Uri selectedImage = data.getData();
-                    isFromActtivityResult = true;
-                    imageView.setImageURI(imageUrl);
-                    break;
-                case TAKE_PICTURE:
-                    imageUrl = Uri.fromFile(new File(mCurrentPhotoPath));
-                    imageView.setImageURI(imageUrl);
-                    isFromActtivityResult = true;
-                    break;
-            }
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_new_topic, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_send) {
-            send();
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void send() {
-        final String content = contentText.getText().toString();
-        final String topicId = topic != null ? topic.getId() : null;
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading...");
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading...");
+        EditText editTextt_title = (EditText)findViewById(R.id.title);
+        final String title = editTextt_title.getText().toString();
+        EditText editText2 = (EditText)findViewById(R.id.content);
+        final String content = editText2.getText().toString();
+        final String topicId = topic != null ? topic.getId() : null;
+        //  final String imageUrl = topic != null ? topic.getImageUrl() : null;
+        if(!content.isEmpty()) {
+            if(imageUrl != null) {
 
-        /*if(content != null && !content.isEmpty()){
-            sendAndFinish(topicId, "", content, "", "", null);
-        }else{
-            Toast.makeText(NewTopicActivity.this, "please write some text!", Toast.LENGTH_SHORT).show();
-        }*/
-
-       /*if(imageUrl.toString() != null){
-
-            if(isFromActtivityResult){ //imageUri from gallery or camera
-
-                StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-
-                ref.putFile(imageUrl).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+                if(mCurrentPhotoPath!=null) {
+                    imageUrl = Uri.fromFile(new File(mCurrentPhotoPath));
+                }
+                ref.putFile(imageUrl)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        progressDialog.dismiss();
+                                        String downloadUrl = task.getResult().toString();
+                                        sendAndFinish(topicId, "", content, downloadUrl, "", null);
+                                    }
+                                });
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
                                 progressDialog.dismiss();
-                                String downloadUrl = task.getResult().toString();
-                                sendAndFinish(topicId, "", content, downloadUrl, "", null);
+
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                        .getTotalByteCount());
+                                progressDialog.setMessage("Uploaded "+(int)progress+"%");
                             }
                         });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
+            }
+        }else if(!title.isEmpty()){
+            if(audioUrl != null){
 
-                    }
-                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                .getTotalByteCount());
-                        progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                    }
-                });
-            }else{//imageUri from firebase
-                sendAndFinish(topicId, "", content, imageUrl.toString(), "", null);
+
+                StorageReference ref = storageReference.child("sounds/"+ UUID.randomUUID().toString());
+                if(recordVoice.getAudioFilePath()!=null) {
+                    audioUrl = Uri.fromFile(new File(recordVoice.getAudioFilePath()));
+                }
+                ref.putFile(audioUrl)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        progressDialog.dismiss();
+                                        String downloadUrl = task.getResult().toString();
+                                        sendAndFinish(topicId, title, "", "", downloadUrl, null);
+                                    }
+                                });
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                        .getTotalByteCount());
+                                progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                            }
+                        });
+
+            }else{
+                Toast.makeText(this, "audioUrl is null", Toast.LENGTH_SHORT).show();
             }
         }else{
-
-        }*/
-
-        //if(audioUrl != null){  //audio from device
-            StorageReference ref = storageReference.child("sounds/" + UUID.randomUUID().toString());
-
-            ref.putFile(audioUrl).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            progressDialog.dismiss();
-                            String downloadUrl = task.getResult().toString();
-                            sendAndFinish(topicId, "", content, "", downloadUrl, null);
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressDialog.dismiss();
-
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                            .getTotalByteCount());
-                    progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                }
-            });
-
-       // }
-
+            Toast.makeText(this, getString(R.string.empty_description), Toast.LENGTH_SHORT).show();
+        }
 
 
     }
+
+
 
     private void sendAndFinish(String topicId, String description, String content, String imageUrl, String audioUrl, String blobKey) {
         List<NameValuePair> params = HTTPTask.getParams(this);
@@ -543,31 +464,8 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         return image;
     }
 
-    ///////////////////// for record
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case RequestPermissionCode:
-                if (grantResults.length > 0) {
-                    boolean StoragePermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean RecordPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    if (StoragePermission && RecordPermission) {
-                        Toast.makeText(NewTopicActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(NewTopicActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
-                    }
-                }
-                break;
-        }
-    }
-    public boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
-        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
-        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
 
-    }
-    /////////////
-
+    ///////////////////// START PART STATIC IMAGES //////////////////
     ImageButton btnBack = null;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -579,97 +477,8 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
         image.destroyDrawingCache();
         image.setBackground(btnBack.getDrawable());
         GetImagesFromFirebaseStorage(btnBack.getContentDescription().toString());
-        isFromActtivityResult = false;
-
     }
-
-    private void controlPlayer(){
-
-        Chronometer  chronometer = (Chronometer)findViewById(R.id.chronometer_player);
-        chronometer.setBase(elapsedMillis);
-        findViewById(R.id.btn_close_player).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recordVoice.deleteFile();
-                audioPath = null;
-                player.setAnimation(fade_out);
-                player.setVisibility(View.GONE);
-                imageView.setVisibility(View.VISIBLE);
-                contentText.setVisibility(View.VISIBLE);
-            }
-        });
-
-        findViewById(R.id.btn_play_pause).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!isPlaying){
-
-                    btn_paly_pause.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-                    if(typeVoice == "Type 1") playSound(1.3f);
-                    if(typeVoice == "Type 2") playSound(1.8f);
-                    if(typeVoice == "Type 3") playSound(0.9f);
-
-                    try {
-                        Toast.makeText(NewTopicActivity.this, ""+recordVoice.getCurrentPos(),Toast.LENGTH_SHORT).show();
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                btn_paly_pause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-                            }
-                        },recordVoice.getCurrentPos());
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    isPlaying = true;
-                }else{
-
-                    stopSound();
-                    btn_paly_pause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-                    isPlaying = false;
-                }
-            }
-        });
-
-    }
-
-
-    public void playSound(final float r) {
-
-        Thread streamThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-
-                soundPool = new SoundPool(1,AudioManager.STREAM_MUSIC, 0);
-                soundId = soundPool.load(recordVoice.getOutputFile(), 1);
-                soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                    @Override
-                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                        soundPool.play(soundId,100, 100, 0, 0, r);
-                    }
-                });
-
-            }
-        });
-
-        streamThread.start();
-
-    }
-
-    private void stopSound(){
-        soundPool.stop(soundId);
-    }
-
-    private void pauseSound(){
-        soundPool.pause(soundId);
-    }
-
     private void GetImagesFromFirebaseStorage(String imageSelected){
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
         storageReference.child("images/"+imageSelected).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -678,10 +487,81 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 imageUrl = uri;
             }
         });
+    }
+    ///////////////////////////// END PART STATIC IMAGES //////////////////
 
 
+    private void LoadTopicForEditing(){
+        if (topic != null) {
+            //TextView description = (TextView) findViewById(R.id.description);
+            //description.setText(topic.getDescription());
+            final TextView content = (TextView) findViewById(R.id.content);
+            content.setText(topic.getContent(this));
+
+            String url = topic.getImageUrl();
+            if (url != null && !url.isEmpty()) {
+                ImageView imageView = (ImageView) findViewById(R.id.image);
+                Glide.with(this)
+                        .load(topic.getImageUrl())
+                        .crossFade()
+                        .into(imageView);
+                //findViewById(R.id.new_image).setVisibility(View.GONE);
+
+            }
+
+            //String audioUrl = topic.getAudioUrl();
+            /*if(auioUrl != null && !url.isEmpty()){
+                //show player for editing
+            }*/
+
+        }
+    }
+
+    boolean isStartRecord = false;
+    public void ButtonsClick(View v){
+
+
+
+        switch (v.getId()){
+            case R.id.btn_start_send_record:
+                if(!isStartRecord){
+                    findViewById(R.id.layout_record_voice).setVisibility(View.VISIBLE);
+                    fab.setImageResource(R.drawable.ic_back_arrow);
+                    isStartRecord = true;
+                }else{
+                    //audioUrl = null;
+                    //cancel record
+                    findViewById(R.id.layout_record).setVisibility(View.GONE);
+                    findViewById(R.id.Bottom).setVisibility(View.VISIBLE);
+                    findViewById(R.id.layout_images_text).setVisibility(View.VISIBLE);
+                    isStartRecord = false;
+                }
+
+                break;
+            case R.id.btn_save_record:
+                findViewById(R.id.layout_record_voice).setVisibility(View.GONE);
+                findViewById(R.id.player_card).setVisibility(View.VISIBLE);
+                fab.setImageResource(R.drawable.ic_back_arrow);
+                isStartRecord = true;
+                break;
+            case R.id.btn_cancel_record:
+                fab.setImageResource(R.drawable.ic_microphone);
+                findViewById(R.id.layout_record_voice).setVisibility(View.GONE);
+                isStartRecord = false;
+                break;
+            case R.id.btn_close_player:
+                findViewById(R.id.player_card).setVisibility(View.GONE);
+                fab.setImageResource(R.drawable.ic_microphone);
+                isStartRecord = false;
+                break;
+            case R.id.play_pause_btn: findViewById(v.getId()).setBackgroundResource(R.drawable.ic_pause_button);
+                break;
+
+        }
 
     }
+
+
 
 
 
