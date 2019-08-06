@@ -54,6 +54,7 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -124,6 +125,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
          imageView = findViewById(R.id.image);
          rnd = new Random();
          recordVoice = new RecordVoice();
+
 
 
         for(int i=1; i<14; i++) {

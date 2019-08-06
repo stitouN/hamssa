@@ -20,7 +20,7 @@ public class RecordVoice {
 
     MediaPlayer mediaPlayer;
     MediaRecorder mediaRecorder;
-    final String audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() +"/voice.amr";
+    private final String audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() +"/voice.amr";
     Context context;
     SoundPool soundPool;
     int soundId;
