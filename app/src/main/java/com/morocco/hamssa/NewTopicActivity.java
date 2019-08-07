@@ -281,7 +281,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
                 fab.setImageResource(R.drawable.ic_microphone);
                 findViewById(R.id.layout_record_voice).setVisibility(View.GONE);
-                findViewById(R.id.player_card).setVisibility(View.GONE);
+                findViewById(R.id.card_player).setVisibility(View.GONE);
 
             }
         });
@@ -542,7 +542,7 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.btn_save_record:
                 findViewById(R.id.layout_record_voice).setVisibility(View.GONE);
-                findViewById(R.id.player_card).setVisibility(View.VISIBLE);
+                findViewById(R.id.card_player).setVisibility(View.VISIBLE);
                 fab.setImageResource(R.drawable.ic_back_arrow);
                 isStartRecord = true;
                 break;
@@ -551,12 +551,12 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
                 findViewById(R.id.layout_record_voice).setVisibility(View.GONE);
                 isStartRecord = false;
                 break;
-            case R.id.btn_close_player:
+            /*case R.id.btn_close_player:
                 findViewById(R.id.player_card).setVisibility(View.GONE);
                 fab.setImageResource(R.drawable.ic_microphone);
                 isStartRecord = false;
-                break;
-            case R.id.play_pause_btn: findViewById(v.getId()).setBackgroundResource(R.drawable.ic_pause_button);
+                break;*/
+            case R.id.btn_play_pause1: findViewById(v.getId()).setBackgroundResource(R.drawable.ic_pause_button);
                 break;
 
         }

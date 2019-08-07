@@ -69,11 +69,11 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             userName = (TextView) view.findViewById(R.id.userName);
             image = (ImageView) view.findViewById(R.id.image);
             imageWrapper = view.findViewById(R.id.image_wrapper);
-            link = view.findViewById(R.id.link);
-            userNameWrapper = view.findViewById(R.id.userName_wrapper);
-            contentImage = (ImageView)view.findViewById(R.id.content_image);
-            contentImageWrapper = view.findViewById(R.id.content_image_wrapper);
-            expand = view.findViewById(R.id.expand);
+            //link = view.findViewById(R.id.link);
+            //userNameWrapper = view.findViewById(R.id.userName_wrapper);
+            contentImage = (ImageView)view.findViewById(R.id.image_content);
+            //contentImageWrapper = view.findViewById(R.id.content_image_wrapper);
+            expand = view.findViewById(R.id.more);
             //btn_play_pause = (ImageButton) view.findViewById(R.id.btn_play_pause);
             // playerWrapper = view.findViewById(R.id.player_wrapper);
 

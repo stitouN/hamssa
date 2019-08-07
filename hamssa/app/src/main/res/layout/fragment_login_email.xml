@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.morocco.hamssa.LoginActivity"
+    android:padding="22dp"
+    android:background="@color/topics_background">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:paddingBottom="32dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="22dp"
+            android:text="@string/account_login_banner"/>
+
+        <TextView
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"/>
+
+        <EditText
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:inputType="textPersonName|textNoSuggestions"
+            android:hint="@string/user_or_email"
+            android:textColor="@color/main"/>
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="22dp"
+            android:inputType="textPassword"
+            android:hint="@string/password"
+            android:textColor="@color/main"/>
+
+        <Button
+            android:id="@+id/send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/send"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/recover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:textSize="12dp"
+        android:textColor="#777777"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="@string/recover_password"/>
+
+</RelativeLayout>
