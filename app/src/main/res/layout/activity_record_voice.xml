@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/White"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
+        android:layout_alignParentTop="true"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:paddingRight="8dp"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_scrollFlags="scroll|enterAlways"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+    <ScrollView
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:fillViewport="true"
+     android:layout_below="@id/appBarLy"
+     android:layout_above="@id/bottom"
+     >
+
+     <LinearLayout
+
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:paddingLeft="16dp"
+         android:paddingRight="16dp"
+         android:paddingTop="16dp"
+
+         >
+         <EditText
+             android:id="@+id/title"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:hint="@string/topic_description_hint"
+             android:textSize="16sp"
+             android:layout_marginBottom="16dp"
+             android:textColor="@color/accent"
+
+             />
+
+         <android.support.v7.widget.CardView
+             android:id="@+id/card_player"
+             app:cardUseCompatPadding="true"
+             app:cardElevation="4dp"
+             app:cardCornerRadius="4dp"
+             app:contentPadding="8dp"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:visibility="gone"
+             >
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:orientation="vertical"
+                 >
+                 <ImageView
+                     android:layout_gravity="end"
+                     android:layout_width="28dp"
+                     android:layout_height="28dp"
+                     android:background="@drawable/ic_close_black_24dp"
+                     android:id="@+id/btn_close_player"
+                     android:onClick="ButtonsClick"
+                     />
+
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content">
+                     <TextView
+                         android:id="@+id/txt_rate"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="Choice rate:"
+                         />
+                     <TextView
+                         android:id="@+id/value_rate"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="1.1"
+                         android:layout_marginStart="8dp"
+                         android:layout_marginLeft="8dp"
+                         android:textColor="@color/accent"
+                         />
+                 </LinearLayout>
+                 <com.xw.repo.BubbleSeekBar
+                     android:id="@+id/seekbar_rate"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     app:bsb_bubble_color="@color/accent"
+                     app:bsb_bubble_text_color="@color/White"
+                     app:bsb_section_count="7"
+                     app:bsb_is_float_type="true"
+                     app:bsb_bubble_text_size="16dp"
+                     app:bsb_max="1.7"
+                     app:bsb_min="1.1"
+                     app:bsb_show_section_mark="true"
+                     app:bsb_show_section_text="true"
+                     app:bsb_second_track_color="@color/accent"
+                     android:layout_marginTop="16dp"
+                     android:layout_marginBottom="16dp"
+
+                     />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:background="@drawable/border_record"
+
+
+                        >
+                        <ImageView
+                            android:layout_gravity="start|center_vertical"
+                            android:background="@drawable/ic_play_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:id="@+id/btn_play_stop"
+                            android:onClick="ButtonsClick"
+                            />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:background="@drawable/border2"
+                            android:gravity="center_vertical"
+                            android:layout_gravity="end"
+
+                            >
+                            <Chronometer
+                                android:id="@+id/chronometer_sound"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="00:00"
+                                android:textColor="@color/White"
+                                android:textStyle="bold"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginStart="16dp"
+                                />
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@drawable/ic_sound_frecuency"
+                                android:layout_marginRight="16dp"
+                                />
+                        </LinearLayout>
+                    </FrameLayout>
+
+             </LinearLayout>
+
+         </android.support.v7.widget.CardView>
+     </LinearLayout>
+
+    </ScrollView>
+    <FrameLayout
+        android:id="@+id/bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:background="@color/WhiteSmoke"
+
+        >
+        <LinearLayout
+            android:id="@+id/layout_record_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="start|center_vertical"
+            android:background="@drawable/border_record"
+            android:visibility="gone"
+
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/border2"
+                android:gravity="center_vertical"
+
+                >
+                <Chronometer
+                    android:id="@+id/chronometer_record"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textColor="@color/White"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/ic_sound_frecuency" />
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/btn_cancel_record"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/ic_cancel_recording"
+                android:onClick="ButtonsClick"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+
+                />
+            <ImageButton
+                android:onClick="ButtonsClick"
+                android:id="@+id/btn_save_record"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/ic_checked"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+
+                />
+        </LinearLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_microphone"
+            android:id="@+id/btn_start_send_record"
+            android:onClick="ButtonsClick"
+            android:layout_gravity="end|center_vertical"
+            app:fabSize="normal"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            />
+    </FrameLayout>
+
+
+</RelativeLayout>

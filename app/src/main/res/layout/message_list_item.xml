@@ -61,16 +61,13 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_gravity="start"
                     android:id="@+id/profile_picture"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:src="@drawable/ic_account"/>
+                    android:src="@drawable/profile_picture"/>
 
                 <LinearLayout
-                    android:layout_gravity="end"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -79,11 +76,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="4dp"
-                        >
+                        android:layout_marginBottom="4dp">
 
                         <TextView
-                            android:gravity="start"
                             android:id="@+id/name"
                             android:layout_width="0dp"
                             android:layout_weight="1"
@@ -92,7 +87,6 @@
                             android:text="namenamename"/>
 
                         <TextView
-                            android:layout_gravity="end|center_vertical"
                             android:id="@+id/time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -107,29 +101,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textColor="#444444"
-                        android:text="This is a test this is a test this is a test this is a test"
-                        android:gravity="start"
-                        />
+                        android:text="This is a test this is a test this is a test this is a test"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginTop="6dp"
-                        android:gravity="end"
-                        >
+                        android:gravity="right">
 
                         <LinearLayout
                             android:id="@+id/votes_down_wrapper"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            >
+                            android:orientation="horizontal">
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginEnd="4dp"
-                                android:layout_marginRight="4dp"
                                 android:src="@drawable/thumb_down"/>
                             <TextView
                                 android:id="@+id/votes_down"
@@ -145,14 +134,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:orientation="horizontal"
-                            >
+                            android:orientation="horizontal">
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginEnd="4dp"
-                                android:layout_marginRight="4dp"
                                 android:src="@drawable/thumb_up"/>
                             <TextView
                                 android:id="@+id/votes_up"

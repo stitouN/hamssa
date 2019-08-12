@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.morocco.hamssa.adapters.TopicsFragmentPagerAdapter;
 import com.morocco.hamssa.data.Database;
@@ -24,23 +29,62 @@ import com.morocco.hamssa.gcm.RegistrationIntentService;
 import com.morocco.hamssa.share.ShareWindow;
 import com.morocco.hamssa.utils.Constants;
 import com.morocco.hamssa.utils.Utils;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements MessagesFragment.OnMessageClickListener{
 
-
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences preferences = getSharedPreferences("Settings", 0);
         SetLocale(preferences.getString("My_lang", ""));
         setContentView(R.layout.activity_main);
+        /////////
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(R.drawable.ic_add_black_24dp);
+        FloatingActionButton floatingActionButton = new FloatingActionButton.Builder(this).setContentView(icon).build();
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        // repeat many times:
+        ImageView itemIcon = new ImageView(this);
+        itemIcon.setImageDrawable(getDrawable(R.drawable.ic_format_color_text_black_24dp));
+        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+        ImageView itemIcon2 = new ImageView(this);
+        itemIcon2.setImageDrawable(getDrawable(R.drawable.ic_photo_camera_black_24dp));
+        SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
+        ImageView itemIcon3 = new ImageView(this);
+        itemIcon3.setImageDrawable(getDrawable(R.drawable.mic_animation));
+        SubActionButton button3 = itemBuilder.setContentView(itemIcon3).build();
+        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(button1)
+                .addSubActionView(button2)
+                .addSubActionView(button3)
+                .attachTo(floatingActionButton)
+                .build();
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, NewTopicActivity.class));
+            }
+        });
+
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RecordVoiceActivity.class));
+            }
+        });
+        ////////
+
         if(isLogged(this)) {
             setupActionBar();
             setupViewPager();
-            setupFABButton();
+            setupFABButoon();
             if(Utils.checkPlayServices(this)){
                 // Start IntentService to register this application with GCM
                 Intent intent = new Intent(this, RegistrationIntentService.class);
@@ -68,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
     }
 
-    private void setupFABButton(){
+    private void setupFABButoon(){
         View fab = findViewById(R.id.fab);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if(sp.getLong(Constants.SP.USER_ROLE, 0) == 1 || Constants.EVERYBODY_CAN_POST){
@@ -145,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
 
     }
+
+
+
+
 
 
 }

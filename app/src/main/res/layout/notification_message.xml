@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:clickable="true"
+        android:id="@+id/notif_message"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_insert_comment"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+
+            />
+        <TextView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/circle"
+            android:text="5"
+            android:textSize="9sp"
+            android:textColor="@color/accent"
+            android:layout_gravity="end"
+            android:gravity="center"
+            />
+    </FrameLayout>
+
+</FrameLayout>

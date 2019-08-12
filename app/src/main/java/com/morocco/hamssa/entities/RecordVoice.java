@@ -1,17 +1,13 @@
 package com.morocco.hamssa.entities;
 
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,19 +16,33 @@ public class RecordVoice {
 
     MediaPlayer mediaPlayer;
     MediaRecorder mediaRecorder;
-    private final String audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() +"/voice.amr";
-    Context context;
+    private String audioFilePath = "";
     SoundPool soundPool;
     int soundId;
+    private Uri audioUri;
 
 
     public String getAudioFilePath() {
         return audioFilePath;
     }
 
+    public void setAudioFilePath(String audioFilePath) {
+        this.audioFilePath = audioFilePath;
+    }
+
+    public Uri getAudioUri(){
+
+        if(getAudioFilePath() != ""){
+            return this.audioUri = Uri.fromFile(new File(getAudioFilePath()));
+        }
+
+        return  this.audioUri = null;
+    }
+
 
 
     public void startRecording() throws IOException {
+
         ditchMediaRecord();
         deleteFile();
         mediaRecorder = new MediaRecorder();
@@ -40,7 +50,6 @@ public class RecordVoice {
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mediaRecorder.setOutputFile(getAudioFilePath());
-
         mediaRecorder.prepare();
         mediaRecorder.start();
     }
@@ -120,11 +129,11 @@ public class RecordVoice {
 
     }
 
-    private void stopSound(){
+    public void stopSound(){
         soundPool.stop(soundId);
     }
 
-    private void pauseSound(){
+    public void pauseSound(){
         soundPool.pause(soundId);
     }
 

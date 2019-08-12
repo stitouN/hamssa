@@ -164,7 +164,6 @@ public class Database {
         Utils.addString(values, jsonObject, "title");
         Utils.addString(values, jsonObject, "description");
         Utils.addString(values, jsonObject, "url");
-        //Utils.addString(values, jsonObject, "audioUrl");
         Utils.addInt(values, jsonObject, "numMessages");
         Utils.addInt(values, jsonObject, "removed");
         Utils.addString(values, jsonObject, "linkUrl");
@@ -182,7 +181,7 @@ public class Database {
 
         String query = "SELECT * FROM topics WHERE removed != 1";
        if(type == TopicsFragment.TYPE.LATEST) {
-            query += " ORDER BY time"; // remove DESC
+            query += " ORDER BY time DESC";
         }else if(type==TopicsFragment.TYPE.MY_POSTS){
             query+=" and userId='"+userId+"' ";
        }
@@ -206,7 +205,6 @@ public class Database {
         int descriptionIndex = cursor.getColumnIndex("description");
         int userNameIndex = cursor.getColumnIndex("userName");
         int urlIndex = cursor.getColumnIndex("url");
-        //int audioUrlIndex = cursor.getColumnIndex("audioUrl");
         int userIdIndex = cursor.getColumnIndex("userId");
         int timeIndex = cursor.getColumnIndex("time");
         int numMessagesIndex=cursor.getColumnIndex("numMessages");
@@ -216,12 +214,12 @@ public class Database {
             String description = cursor.getString(descriptionIndex);
             String userName = cursor.getString(userNameIndex);
             String imageUrl = cursor.getString(urlIndex);
-            //String audioUrl = cursor.getString(audioUrlIndex); // add audioUrl here
+            String audioUrl = cursor.getString(urlIndex); // add audioUrl here
             String userId = cursor.getString(userIdIndex);
             Long time = cursor.getLong(timeIndex);
             Long numMessages=cursor.getLong(numMessagesIndex);
 
-            topic = new Topic(id, title, description, userName, imageUrl, userId, time,numMessages);
+            topic = new Topic(id, title, description, userName, imageUrl, audioUrl, userId, time,numMessages);
         }
 
         closeDatabase();
@@ -465,21 +463,18 @@ public class Database {
     /////////////////////////////////////////////////////////////
     // TOPIC EXTRAS
     /////////////////////////////////////////////////////////////
-
     public void setTopicCursor(String topicId, String content){
         setTopicExtra(topicId, "cursor", content);
     }
     public String getTopicCursor(String topicId){
         return getTopicExtra(topicId, "cursor");
     }
-
     public void setTopicContent(String topicId, String content){
         setTopicExtra(topicId, "content", content);
     }
     public String getTopicContent(String topicId){
         return getTopicExtra(topicId, "content");
     }
-
     public void setTopicExtra(String topicId, String key, String value){
         SQLiteDatabase db = openDatabase();
 
@@ -495,6 +490,7 @@ public class Database {
 
         closeDatabase();
     }
+
     public String getTopicExtra(String topicId, String key){
         SQLiteDatabase db = openDatabase();
 
