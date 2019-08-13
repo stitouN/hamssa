@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         SetLocale(preferences.getString("My_lang", ""));
         setContentView(R.layout.activity_main);
         /////////
-        ImageView icon = new ImageView(this);
+        /*ImageView icon = new ImageView(this);
         icon.setImageResource(R.drawable.ic_add_black_24dp);
         FloatingActionButton floatingActionButton = new FloatingActionButton.Builder(this).setContentView(icon).build();
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
@@ -78,13 +78,13 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RecordVoiceActivity.class));
             }
-        });
+        });*/
         ////////
 
         if(isLogged(this)) {
             setupActionBar();
             setupViewPager();
-            setupFABButoon();
+            setupFabButton();
             if(Utils.checkPlayServices(this)){
                 // Start IntentService to register this application with GCM
                 Intent intent = new Intent(this, RegistrationIntentService.class);
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
     }
 
-    private void setupFABButoon(){
+    private void setupFabButton(){
         View fab = findViewById(R.id.fab);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if(sp.getLong(Constants.SP.USER_ROLE, 0) == 1 || Constants.EVERYBODY_CAN_POST){

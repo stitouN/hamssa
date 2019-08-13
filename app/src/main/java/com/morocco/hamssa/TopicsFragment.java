@@ -96,6 +96,8 @@ public class TopicsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.list);
         recyclerView.setHasFixedSize(false);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(20));
 

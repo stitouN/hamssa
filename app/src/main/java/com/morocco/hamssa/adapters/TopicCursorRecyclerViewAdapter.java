@@ -3,9 +3,11 @@ package com.morocco.hamssa.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +55,12 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
     class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView image, contentImage;
         public View imageWrapper, link, userNameWrapper, contentImageWrapper, expand;
-        public TextView description, numMessages, title, userName;
+        public TextView description, numMessages, title, userName, description_without_img;
         long mLastClickTime = 0;
         public ViewHolder(View view){
             super(view);
             description = (TextView) view.findViewById(R.id.description);
+            description_without_img = (TextView) view.findViewById(R.id.description_without_image);
             numMessages = (TextView) view.findViewById(R.id.numMessages);
             title = (TextView) view.findViewById(R.id.title);
             userName = (TextView) view.findViewById(R.id.userName);
@@ -152,6 +155,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             description = cursor.getString(titleIndex);
         }
         viewHolder.description.setText(description);
+        viewHolder.description_without_img.setText(description);
         String title = cursor.getString(titleIndex);
         if(title != null && !title.isEmpty()) {
             viewHolder.title.setVisibility(View.VISIBLE);
@@ -197,15 +201,19 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                             }
                         });
            }
+            viewHolder.description_without_img.setVisibility(View.VISIBLE);
+            viewHolder.contentImageWrapper.setVisibility(View.GONE);
             String contentImageUrl = cursor.getString(urlIndex);
             if(contentImageUrl != null && !contentImageUrl.isEmpty()){
+                viewHolder.description_without_img.setVisibility(View.GONE);
                 viewHolder.contentImageWrapper.setVisibility(View.VISIBLE);
+
                 Glide.with(context)
                         .load(contentImageUrl)
                         .crossFade()
                         //.centerCrop()
                         .into(viewHolder.contentImage);
-            }
+            }else {viewHolder.description_without_img.setVisibility(View.VISIBLE);}
         }else{
             String url = cursor.getString(urlIndex);
             if(url == null || url.isEmpty()){

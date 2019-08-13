@@ -179,16 +179,16 @@ public class Database {
     public Cursor getTopics(TopicsFragment.TYPE type) {
         SQLiteDatabase db = openDatabase();
 
-        String query = "SELECT * FROM topics WHERE removed != 1";
-       if(type == TopicsFragment.TYPE.LATEST) {
+        String query = "SELECT * FROM topics WHERE removed != 1 ORDER BY time DESC";
+       /*if(type == TopicsFragment.TYPE.LATEST) {
             query += " ORDER BY time DESC";
         }else if(type==TopicsFragment.TYPE.MY_POSTS){
-            query+=" and userId='"+userId+"' ";
+            query +=" and userId='"+userId+"' ";
        }
         else{
             //query += " AND DATETIME(time/1000, 'unixepoch') > DATETIME('now', '-"+pastDaysLimit+" days') ORDER BY numMessages DESC";
            query +=" ORDER BY numMessages DESC";
-        }
+        }*/
         Cursor cursor = db.rawQuery(query, null);
 
         return cursor;

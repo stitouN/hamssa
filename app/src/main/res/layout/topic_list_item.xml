@@ -96,6 +96,7 @@
                     android:textColor="@color/accent"
                     android:singleLine="true"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     android:text="This is a placeholder for a text"/>
 
                 <ImageButton
@@ -111,14 +112,26 @@
                     android:src="@drawable/ic_link"/>
 
             </LinearLayout>
+            <TextView
+                android:id="@+id/description_without_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/topic_description_hint"
+
+                />
 
 
             <FrameLayout
                 android:id="@+id/content_image_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="190dp"
-                android:background="#F1F1F1"
+                android:background="@color/White"
                 android:layout_marginTop="4dp"
+                android:visibility="gone"
                 >
 
                 <ImageView
@@ -128,6 +141,7 @@
                     android:adjustViewBounds="false"
                     android:scaleType="centerCrop"
                     android:background="@drawable/image8"
+
                     />
 
 
@@ -139,7 +153,7 @@
                     android:inputType="textMultiLine"
                     android:textSize="18sp"
                     android:gravity="center"
-                    android:textColor="@color/White"
+                    android:textColor="@color/WhiteSmoke"
                     android:textStyle="bold"
                     android:shadowColor="@color/Black"
                     android:shadowDx="1"

@@ -20,7 +20,7 @@
             android:paddingRight="4dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="snap"
 
 
 
@@ -33,9 +33,10 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             app:tabMode="fixed"
+            android:visibility="gone"
             />
        <FrameLayout
-           android:visibility="gone"
+
            android:padding="8dp"
            android:background="@color/White"
            android:layout_width="match_parent"
