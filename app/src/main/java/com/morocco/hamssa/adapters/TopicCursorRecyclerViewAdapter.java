@@ -69,7 +69,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             userName = (TextView) view.findViewById(R.id.userName);
             image = (ImageView) view.findViewById(R.id.image);
             imageWrapper = view.findViewById(R.id.image_wrapper);
-            //link = view.findViewById(R.id.link);
+             //link = view.findViewById(R.id.link);
             //userNameWrapper = view.findViewById(R.id.userName_wrapper);
             contentImage = (ImageView)view.findViewById(R.id.image_content);
             //contentImageWrapper = view.findViewById(R.id.content_image_wrapper);
@@ -109,7 +109,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                 }
             });
 
-            link.setOnClickListener(new View.OnClickListener() {
+/*            link.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // Preventing multiple clicks, using threshold of 1 second
@@ -124,7 +124,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                         onItemClickListener.onLinkClick(title, linkUrl);
                     }
                 }
-            });
+            });*/
 
             expand.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -159,9 +159,9 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.topic_list_item, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(view);
-        if(Constants.SHOW_LINKS) {
+     /*   if(Constants.SHOW_LINKS) {
             viewHolder.link.setVisibility(View.VISIBLE);
-        }
+        }*/
         return viewHolder;
     }
 
@@ -174,7 +174,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
         if(description == null || description.isEmpty()){
             description = cursor.getString(titleIndex);
         }
-        viewHolder.description.setText(description);
+        //viewHolder.description.setText(description);
         String title = cursor.getString(titleIndex);
         if(title != null && !title.isEmpty()) {
             viewHolder.title.setVisibility(View.VISIBLE);
@@ -185,7 +185,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
 
         String userName = cursor.getString(userNameIndex);
         if(userName != null && !userName.isEmpty()) {
-            viewHolder.userNameWrapper.setVisibility(View.VISIBLE);
+//            viewHolder.userNameWrapper.setVisibility(View.VISIBLE);
             viewHolder.userName.setText("@"+userName);
         }else{
             viewHolder.userNameWrapper.setVisibility(View.GONE);
@@ -195,19 +195,19 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
 
         if(Constants.SHOW_LINKS){
             String linkUrl = cursor.getString(linkIndex);
-            if(linkUrl != null && !linkUrl.isEmpty()){
+          /*  if(linkUrl != null && !linkUrl.isEmpty()){
                 viewHolder.link.setVisibility(View.VISIBLE);
             }else{
                 viewHolder.link.setVisibility(View.GONE);
-            }
+            }*/
         }
 
-        viewHolder.contentImageWrapper.setVisibility(View.GONE);
+//        viewHolder.contentImageWrapper.setVisibility(View.GONE);
         //viewHolder.playerWrapper.setVisibility(View.GONE);
         if(personal){
             String userImageUrl = cursor.getString(userImageUrlIndex);
             if(userImageUrl == null || userImageUrl.isEmpty()){
-                viewHolder.imageWrapper.setVisibility(View.GONE);
+//                viewHolder.imageWrapper.setVisibility(View.GONE);
             }else {
                 viewHolder.imageWrapper.setVisibility(View.VISIBLE);
                 Glide.with(context)
@@ -223,7 +223,7 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             }
             String contentImageUrl = cursor.getString(urlIndex);
             if(contentImageUrl != null && !contentImageUrl.isEmpty()){
-                viewHolder.contentImageWrapper.setVisibility(View.VISIBLE);
+//                viewHolder.contentImageWrapper.setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(contentImageUrl)
                         .crossFade()
