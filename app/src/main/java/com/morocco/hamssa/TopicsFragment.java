@@ -5,10 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -98,6 +96,8 @@ public class TopicsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.list);
         recyclerView.setHasFixedSize(false);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(20));
 
@@ -145,7 +145,6 @@ public class TopicsFragment extends Fragment {
     private void onTopicLongClick(final String topicId){
 
         Topic topic = new Database(getContext()).getTopic(topicId);
-
         if(topic.isMine(getContext())){
             CharSequence options[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -163,7 +162,7 @@ public class TopicsFragment extends Fragment {
                 }
             });
             builder.show();
-       }
+        }
     }
 
 

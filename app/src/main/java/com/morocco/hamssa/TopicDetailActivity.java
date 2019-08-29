@@ -69,10 +69,6 @@ public class TopicDetailActivity extends AppCompatActivity {
                     .crossFade()
                     .into(imageView);
         }
-        /*String audioUrl = topic.getAudioUrl();
-        if(audioUrl != null && !audioUrl.isEmpty()){
-            //add sound here
-        }*/
 
         final TextView contentTextView = (TextView)findViewById(R.id.content);
         String content = topic.getContent(this);

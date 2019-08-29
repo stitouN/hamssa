@@ -99,9 +99,4 @@
     <string name="choose_languages">Sélectionnez la langue</string>
     <string name="text_ok">OK</string>
     <string name="the_languages">Langues</string>
-    <string name="what_is_on_your_mind">À quoi tu penses?</string>
-    <string name="typeA">Type 1</string>
-    <string name="typeB">Type 2</string>
-    <string name="typeD">Type 3</string>
-    <string name="typeC">Type 3</string>
 </resources>

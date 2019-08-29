@@ -34,7 +34,6 @@
             android:layout_gravity="top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             app:cardElevation="4dp"
@@ -81,7 +80,9 @@
                     android:textSize="16dp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"
-                    android:textColor="#777777"/>
+                    android:textColor="#777777"
+                    android:text="@string/topic_description_hint"
+                    />
 
                 <LinearLayout
                     android:id="@+id/image_wrapper"
@@ -89,13 +90,15 @@
                     android:layout_height="wrap_content"
                     android:padding="1px"
                     android:background="#999999"
-                    android:visibility="gone">
+                    >
                     <ImageView
                         android:id="@+id/image"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scaleType="fitCenter"
-                        android:adjustViewBounds="true"/>
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/image1"
+                        />
                 </LinearLayout>
 
                 <TextView
@@ -105,7 +108,9 @@
                     android:textSize="16dp"
                     android:autoLink="web"
                     android:layout_marginTop="4dp"
-                    android:textColor="#777777"/>
+                    android:textColor="#777777"
+                    android:text="content"
+                    />
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </ScrollView>

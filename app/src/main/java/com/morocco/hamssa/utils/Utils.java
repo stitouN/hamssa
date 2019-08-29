@@ -332,7 +332,6 @@ public class Utils {
                     topic.put("title",topicResult.getString("title"));
                     topic.put("description",topicResult.getString("description"));
                     topic.put("url",topicResult.getString("imageUrl"));
-                    topic.put("audioUrl",topicResult.getString("audioUrl"));
                     topic.put("order",topicResult.getLong("order"));
                     topic.put("numMessages",topicResult.getLong("numMessages"));
                     topic.put("removed",topicResult.getLong("removed"));

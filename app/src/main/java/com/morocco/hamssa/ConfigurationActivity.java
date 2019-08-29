@@ -379,7 +379,7 @@ public class ConfigurationActivity extends AppCompatActivity {
                     Intent refresh = new Intent(getBaseContext(), MainActivity.class);
                     refresh.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getBaseContext().startActivity(refresh);
-                selected = false;
+                    selected = false;
                 }
                 dialogInterface.dismiss();
             }
