@@ -49,5 +49,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     implementation 'com.xw.repo:bubbleseekbar:3.5-lite'
+    implementation 'com.github.jd-alexander:LikeButton:0.2.3'
 }
 apply plugin: 'com.google.gms.google-services'

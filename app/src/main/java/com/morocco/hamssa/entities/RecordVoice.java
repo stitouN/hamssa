@@ -8,6 +8,7 @@ import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class RecordVoice {
         deleteFile();
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mediaRecorder.setOutputFile(getAudioFilePath());
         mediaRecorder.prepare();
@@ -60,10 +61,11 @@ public class RecordVoice {
 
     }
 
-    public void playAudio() throws IOException {
+
+    public void playAudio(String path) throws IOException {
         ditchMediaPlayer();
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setDataSource(getAudioFilePath());
+        mediaPlayer.setDataSource(path);
         mediaPlayer.prepare();
         mediaPlayer.start();
 
@@ -92,17 +94,28 @@ public class RecordVoice {
 
     }
 
-    public int getCurrentPos() throws IOException {
+    public int getCurrentPos(String path) throws IOException {
 
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(getAudioFilePath());
-            return mediaPlayer.getDuration();
+            mediaPlayer.setDataSource(path);
+            return mediaPlayer.getCurrentPosition();
 
 
 
     }
+    public int getDuration(){
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(getAudioFilePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mediaPlayer.getDuration();
+    }
 
-
+   public void stoppedPlayer(){
+        mediaPlayer.stop();
+   }
 
 
     public void playSound(final float r) {
@@ -136,5 +149,68 @@ public class RecordVoice {
     public void pauseSound(){
         soundPool.pause(soundId);
     }
+
+
+    public void startPlaying(String path) {
+
+        if(mediaPlayer != null && mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+        } else if(mediaPlayer != null){
+            mediaPlayer.start();
+        }else{
+            mediaPlayer = new MediaPlayer();
+            try {
+
+                mediaPlayer.setDataSource(path);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void stopPlaying() {
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
+
+    public void pausePlaying(){
+        if(mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+        } else {
+            mediaPlayer.start();
+        }
+    }
+
+    public  String formateMilliSeccond() {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        //int hours = (int) (getDuration() / (1000 * 60 * 60));
+        int minutes = (int) (getDuration() % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((getDuration() % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+
+        // Add hours if there
+        //if (hours > 0) {
+         //   finalTimerString = hours + ":";
+       // }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        return finalTimerString;
+    }
+
+
 
 }

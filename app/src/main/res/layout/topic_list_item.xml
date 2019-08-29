@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -124,6 +125,73 @@
 
                 />
 
+            <LinearLayout
+                android:id="@+id/audio_player"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:id="@+id/tv_audio_uri"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/accent"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    />
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_player"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    >
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        >
+                        <ImageView
+                            android:layout_gravity="start|center_vertical"
+                            android:background="@drawable/ic_play_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:id="@+id/btn_play_stop"
+                            />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:background="@drawable/border2"
+                            android:gravity="center_vertical"
+                            android:layout_gravity="end"
+
+                            >
+                            <Chronometer
+                                android:id="@+id/chronometer_sound"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="00:30"
+                                android:textColor="@color/White"
+                                android:textStyle="bold"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginStart="16dp"
+                                />
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@drawable/ic_sound_frecuency"
+                                android:layout_marginRight="16dp"
+                                />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
 
             <FrameLayout
                 android:id="@+id/content_image_wrapper"
@@ -150,7 +218,7 @@
                     android:maxLines="8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textMultiLine"
+                    android:inputType="textMultiLine|textNoSuggestions"
                     android:textSize="18sp"
                     android:gravity="center"
                     android:textColor="@color/WhiteSmoke"
@@ -183,14 +251,19 @@
                     android:layout_gravity="start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                    <ImageView
-                        android:background="@drawable/ic_heart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                    <com.like.LikeButton
+                        app:icon_type="heart"
+                        app:icon_size="16dp"
+                        card_view:like_drawable="@drawable/ic_heart"
+                        card_view:unlike_drawable="@drawable/heart_off"
+                        android:id="@+id/star_button"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="15"
+                        android:text="0"
                         android:gravity="center_vertical"
                         android:layout_marginStart="4dp"
                         android:layout_marginLeft="4dp"

@@ -50,7 +50,7 @@ public class RecordVoiceActivity extends AppCompatActivity {
     BubbleSeekBar bubbleSeekBar;
     ImageView btn_play_stop;
     TextView valueRate;
-    private final String audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() +"/voice.amr";
+    private final String audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() +"/voice.wav";
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -184,7 +184,7 @@ public class RecordVoiceActivity extends AppCompatActivity {
 
             if( text != "" && !text.isEmpty()){
                 if( audioUrl != null) {
-                    sendTopic.send(des.getText().toString(), audioUrl, "sounds");
+                    sendTopic.send(text, audioUrl, "sounds");
                 }else{
                     Toast.makeText(RecordVoiceActivity.this, "empty audio ", Toast.LENGTH_LONG).show();
 

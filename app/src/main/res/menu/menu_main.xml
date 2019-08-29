@@ -18,6 +18,7 @@
     <item android:id="@+id/action_messages"
         android:title="@string/action_messages"
         app:showAsAction="always"
+        android:icon="@drawable/ic_insert_comment"
         app:actionLayout="@layout/notification_message"
         />
 

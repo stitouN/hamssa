@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.support.v7.widget.RecyclerView;
@@ -11,14 +14,21 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.morocco.hamssa.R;
+import com.morocco.hamssa.data.Database;
+import com.morocco.hamssa.entities.RecordVoice;
+import com.morocco.hamssa.entities.Topic;
 import com.morocco.hamssa.utils.Constants;
 import com.morocco.hamssa.utils.ImageUtils;
+
+import java.io.IOException;
 
 /**
  * Created by hmontaner on 25/06/15.
@@ -39,6 +49,10 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
     }
 
     int idIndex, titleIndex, descriptionIndex, urlIndex, numMessagesIndex, linkIndex, userNameIndex, userImageUrlIndex;
+    boolean isPlaying = false;
+    public static RecordVoice recordVoice = new RecordVoice();
+    Database db = new Database(context);
+
     public void initIndexes(Cursor cursor){
         if(cursor != null){
             idIndex = cursor.getColumnIndex(BaseColumns._ID);
@@ -54,8 +68,11 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
 
     class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView image, contentImage;
-        public View imageWrapper, link, userNameWrapper, contentImageWrapper, expand;
+        public View imageWrapper, link, userNameWrapper, contentImageWrapper, expand, player, btn_play_pause;
         public TextView description, numMessages, title, userName, description_without_img;
+        public Chronometer chronometer;
+        SoundPool soundPool;
+        int soundId;
         long mLastClickTime = 0;
         public ViewHolder(View view){
             super(view);
@@ -71,7 +88,9 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
             contentImage = (ImageView)view.findViewById(R.id.content_image);
             contentImageWrapper = view.findViewById(R.id.content_image_wrapper);
             expand = view.findViewById(R.id.expand);
-
+            player = view.findViewById(R.id.card_player);
+            btn_play_pause = view.findViewById(R.id.btn_play_stop);
+            chronometer = (Chronometer) view.findViewById(R.id.chronometer_sound);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -131,7 +150,26 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
                 }
             });
 
+            btn_play_pause.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Topic topic = db.getTopic(getTopicId(getAdapterPosition()));
+                    if(!isPlaying) {
+                        recordVoice.startPlaying(topic.getImageUrl());
+                        //recordVoice.setAudioFilePath(topic.getImageUrl());
+                        //recordVoice.playSound(1.5f);
+                        btn_play_pause.setBackgroundResource(R.drawable.ic_stop);
+                        isPlaying = true;
+                    }else{
+                        recordVoice.stopPlaying();
+                        btn_play_pause.setBackgroundResource(R.drawable.ic_play_button);
+                        isPlaying = false;
+                    }
+                }
+            });
+
         }
+
     }
 
     @Override
@@ -203,16 +241,25 @@ public class TopicCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<To
            }
             viewHolder.description_without_img.setVisibility(View.VISIBLE);
             viewHolder.contentImageWrapper.setVisibility(View.GONE);
+            viewHolder.player.setVisibility(View.GONE);
             String contentImageUrl = cursor.getString(urlIndex);
             if(contentImageUrl != null && !contentImageUrl.isEmpty()){
-                viewHolder.description_without_img.setVisibility(View.GONE);
-                viewHolder.contentImageWrapper.setVisibility(View.VISIBLE);
 
-                Glide.with(context)
-                        .load(contentImageUrl)
-                        .crossFade()
-                        //.centerCrop()
-                        .into(viewHolder.contentImage);
+                if(contentImageUrl.contains("sounds")){
+                    viewHolder.description_without_img.setVisibility(View.GONE);
+                    viewHolder.contentImageWrapper.setVisibility(View.GONE);
+                    viewHolder.player.setVisibility(View.VISIBLE);
+
+                }else {
+                    viewHolder.description_without_img.setVisibility(View.GONE);
+                    viewHolder.contentImageWrapper.setVisibility(View.VISIBLE);
+
+                    Glide.with(context)
+                            .load(contentImageUrl)
+                            .crossFade()
+                            //.centerCrop()
+                            .into(viewHolder.contentImage);
+                }
             }else {viewHolder.description_without_img.setVisibility(View.VISIBLE);}
         }else{
             String url = cursor.getString(urlIndex);

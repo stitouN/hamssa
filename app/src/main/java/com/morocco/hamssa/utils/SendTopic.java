@@ -50,7 +50,7 @@ public class SendTopic {
 
           if(fileUri.getPath().contains("appspot.com")){
 
-              sendAndFinish("", "", text, fileUri.toString(), "");
+              sendAndFinish("", "", text, fileUri.toString(), "", 0, 0);
 
 
           }else {
@@ -72,10 +72,10 @@ public class SendTopic {
                                         progressDialog.dismiss();
                                         String downloadUrl = task.getResult().toString();
                                         if(typeSend == "sounds") {
-                                            sendAndFinish("", text, "", "", downloadUrl);
-                                        }else{
-                                            sendAndFinish("", "", text, downloadUrl, "");
-                                        }
+                                           sendAndFinish("", text, "", "",downloadUrl , 0, 0);
+                                       }else{
+                                            sendAndFinish("", "", text, downloadUrl, "", 0, 0);
+                                       }
                                     }
                                 });
 
@@ -104,7 +104,7 @@ public class SendTopic {
 
 
 
-    private void sendAndFinish(String topicId, String title, String desc, String imageUrl, String audioUrl) {
+    private void sendAndFinish(String topicId, String title, String desc, String imageUrl, String audioUrl, long audioDuration, float audioRate) {
         List<NameValuePair> params = HTTPTask.getParams(context);
         FirebaseFunctions functions = FirebaseFunctions.getInstance();
         Map<String, Object> data = new HashMap<>();
@@ -113,6 +113,8 @@ public class SendTopic {
         data.put("content", desc);
         data.put("image_url", imageUrl);
         data.put("audioUrl", audioUrl);
+        data.put("audioDuration", audioDuration);
+        data.put("audioRate", audioRate);
         //params.add(new NameValuePair("blob_key", blobKey));
         Constants.TASK task = Constants.TASK.CREATE_TOPIC;
         final ProgressDialog progressDialog = ProgressDialog.show(context, context.getString(R.string.please_wait), context.getString(R.string.connecting_with_server), true);

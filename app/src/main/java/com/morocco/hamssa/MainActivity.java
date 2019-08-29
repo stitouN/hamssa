@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
@@ -22,9 +23,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.morocco.hamssa.adapters.TopicCursorRecyclerViewAdapter;
 import com.morocco.hamssa.adapters.TopicsFragmentPagerAdapter;
 import com.morocco.hamssa.data.Database;
 import com.morocco.hamssa.entities.Message;
+import com.morocco.hamssa.entities.RecordVoice;
 import com.morocco.hamssa.gcm.RegistrationIntentService;
 import com.morocco.hamssa.share.ShareWindow;
 import com.morocco.hamssa.utils.Constants;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         SharedPreferences preferences = getSharedPreferences("Settings", 0);
         SetLocale(preferences.getString("My_lang", ""));
         setContentView(R.layout.activity_main);
+
         /////////
         /*ImageView icon = new ImageView(this);
         icon.setImageResource(R.drawable.ic_add_black_24dp);
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        viewPager.setCurrentItem(1, false);
+        viewPager.setCurrentItem(2, true);
     }
 
     public void OnMessageClick(String messageId){
@@ -191,8 +195,10 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
     }
 
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+       // TopicCursorRecyclerViewAdapter.recordVoice.stopPlaying();
 
-
-
-
+    }
 }
