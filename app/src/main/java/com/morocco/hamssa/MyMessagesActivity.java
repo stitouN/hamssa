@@ -15,7 +15,7 @@ import com.morocco.hamssa.adapters.MessagesFragmentPagerAdapter;
 import com.morocco.hamssa.adapters.MyMessagesFragmentPagerAdapter;
 import com.morocco.hamssa.data.Database;
 import com.morocco.hamssa.entities.Message;
-import com.morocco.hamssa.gcm.GcmIntentService;
+//import com.morocco.hamssa.gcm.GcmIntentService;
 
 public class MyMessagesActivity extends AppCompatActivity implements MessagesFragment.OnMessageClickListener{
 
@@ -28,7 +28,7 @@ public class MyMessagesActivity extends AppCompatActivity implements MessagesFra
         setContentView(R.layout.activity_my_messages);
         setupActionBar();
         setupViewPager();
-        GcmIntentService.notifyMessagesSeen(this);
+        //GcmIntentService.notifyMessagesSeen(this);
     }
 
     private void setupActionBar(){

@@ -7,9 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.morocco.hamssa.LoginEmailFragment;
 import com.morocco.hamssa.LoginQuickFragment;
-import com.morocco.hamssa.MessagesFragment;
 import com.morocco.hamssa.R;
-import com.morocco.hamssa.TopicsFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,40 +1,26 @@
 package com.morocco.hamssa;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.morocco.hamssa.adapters.TopicCursorRecyclerViewAdapter;
 import com.morocco.hamssa.adapters.TopicsFragmentPagerAdapter;
 import com.morocco.hamssa.data.Database;
 import com.morocco.hamssa.entities.Message;
-import com.morocco.hamssa.entities.RecordVoice;
-import com.morocco.hamssa.gcm.RegistrationIntentService;
 import com.morocco.hamssa.share.ShareWindow;
 import com.morocco.hamssa.utils.Constants;
-import com.morocco.hamssa.utils.Utils;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.util.Locale;
 
@@ -89,11 +75,11 @@ public class MainActivity extends AppCompatActivity implements MessagesFragment.
             setupActionBar();
             setupViewPager();
             setupFabButton();
-            if(Utils.checkPlayServices(this)){
+/*            if(Utils.checkPlayServices(this)){
                 // Start IntentService to register this application with GCM
                 Intent intent = new Intent(this, RegistrationIntentService.class);
                 startService(intent);
-            }
+            }*/
             LoginActivity.fetchMyUserInfo(this);
         }else{
             Intent intent = new Intent(this, LoginActivity.class);

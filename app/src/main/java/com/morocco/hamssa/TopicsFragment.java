@@ -13,16 +13,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
+import com.morocco.hamssa.adapters.OnLoadMoreListener;
 import com.morocco.hamssa.adapters.TopicCursorRecyclerViewAdapter;
 import com.morocco.hamssa.adapters.VerticalSpaceItemDecoration;
 import com.morocco.hamssa.data.Database;
@@ -36,6 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +53,7 @@ import java.util.Map;
  */
 public class TopicsFragment extends Fragment {
 
+    private ProgressDialog progressDialog ;
     private static final String ARG_ORDERING_TYPE = "arg_ordering_type";
     public static final String ARG_TOPIC_ID = "arg_topic_id";
     public enum TYPE{
@@ -72,6 +81,8 @@ public class TopicsFragment extends Fragment {
     Context context;
     TYPE type;
     View rootView;
+    private int spaceBetweenAds;
+    private List<Object> mDataSet=new ArrayList<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getActivity();
@@ -92,26 +103,31 @@ public class TopicsFragment extends Fragment {
     }
 
     TopicCursorRecyclerViewAdapter adapter;
+    RecyclerView recyclerView;
     private void setupList(){
-        RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.list);
+        recyclerView= (RecyclerView)rootView.findViewById(R.id.list);
         recyclerView.setHasFixedSize(false);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(20));
-
+        Database db = new Database(context);
+        db.clearAllTables();
         Cursor cursor = getCursor();
-        adapter = new TopicCursorRecyclerViewAdapter(context, cursor);
+        //addNativeExpressAds();
+        adapter = new TopicCursorRecyclerViewAdapter(recyclerView,context, cursor,mDataSet,spaceBetweenAds);
 
         adapter.setEmptyView(rootView.findViewById(R.id.empty_view));
 
         adapter.setOnItemClickListener(new TopicCursorRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onClick(String itemId) {
+                ProgressDialog progressDialog=ProgressDialog.show(context, getString(R.string.please_wait), getString(R.string.connecting_with_server), true);
                 Intent intent = new Intent(context, TopicActivity.class);
                 intent.putExtra(ARG_TOPIC_ID, itemId);
                 startActivity(intent);
+                progressDialog.dismiss();
             }
             @Override
             public void onLinkClick(String title, String linkUrl){
@@ -131,21 +147,40 @@ public class TopicsFragment extends Fragment {
         });
 
         recyclerView.setAdapter(adapter);
-
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.list_view_swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadPlaylistMetadata(swipeRefreshLayout);
+                loadPlaylistMetadata(swipeRefreshLayout,0);
             }
         });
-        loadPlaylistMetadata(swipeRefreshLayout);
+
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                if(adapter.getLastVisibleItem()==0){
+                    loadPlaylistMetadata(swipeRefreshLayout,0);
+                }else if(adapter.getLastVisibleItem()<=2){
+                    loadPlaylistMetadata(swipeRefreshLayout,adapter.getTotalItemCount());
+                }
+
+            }
+        });
+
+        /*swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+        });*/
+        loadPlaylistMetadata(swipeRefreshLayout,0);
     }
 
     private void onTopicLongClick(final String topicId){
-
+        ProgressDialog progressDialog=ProgressDialog.show(context, getString(R.string.please_wait), getString(R.string.connecting_with_server), true);
         Topic topic = new Database(getContext()).getTopic(topicId);
         if(topic.isMine(getContext())){
+            progressDialog.dismiss();
             CharSequence options[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(getString(R.string.options_about_this_topic));
@@ -162,7 +197,14 @@ public class TopicsFragment extends Fragment {
                 }
             });
             builder.show();
+        }else{
+            progressDialog.dismiss();
+            String message ="Vous n'avez pas les droits nécessaires";
+            Toast toast=Toast.makeText(context, message, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
         }
+
     }
 
 
@@ -173,7 +215,7 @@ public class TopicsFragment extends Fragment {
         final Map<String, Object> data = new HashMap<>();
         data.put("token", params.get(1).getValue());
         data.put("topicId", topicId);
-        final ProgressDialog progressDialog = ProgressDialog.show(context, getString(R.string.please_wait), getString(R.string.connecting_with_server), true);
+
         functions.getHttpsCallable(task.toString()).call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             boolean success = false;
             Cursor cursor;
@@ -196,6 +238,7 @@ public class TopicsFragment extends Fragment {
                             }
                             db.removeTopic(topicId);
                             db.addTopics(jsonArray);
+
                             cursor = db.getTopics(type);
                             success=true;
                         }
@@ -248,7 +291,7 @@ public class TopicsFragment extends Fragment {
     }
 
 
-    private void loadPlaylistMetadata(final SwipeRefreshLayout swipeRefreshLayout) {
+    private void loadPlaylistMetadata(final SwipeRefreshLayout swipeRefreshLayout,Integer position) {
         swipeRefreshLayout.setRefreshing(true);
         Constants.TASK task;
         FirebaseFunctions functions = FirebaseFunctions.getInstance();
@@ -260,11 +303,10 @@ public class TopicsFragment extends Fragment {
         }
         final Map<String, Object> data = new HashMap<>();
         data.put("token", params.get(1).getValue());
+        data.put("position",position);
         functions.getHttpsCallable(task.toString()).call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-
-
                     Gson gson = new Gson();
                     if (task.isSuccessful()) {
                         String result = gson.toJson(task.getResult().getData());
@@ -284,7 +326,7 @@ public class TopicsFragment extends Fragment {
                                 cursor = db.getTopics(type);
 
                             }
-                            swipeRefreshLayout.setRefreshing(false);
+                            adapter.setLoaded();
                             if (!isAdded()) {
                                 return;
                             }
@@ -301,11 +343,94 @@ public class TopicsFragment extends Fragment {
                         String message = getString(R.string.connection_error);
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }
-
+                swipeRefreshLayout.setRefreshing(false);
             }
+
         });
     }
 
+    private void addNativeExpressAds() {
+
+        // We are looping through our original dataset
+        // And adding Admob's Native Express Ad at consecutive positions at a distance of spaceBetweenAds
+        // You should change the spaceBetweenAds variable according to your need
+        // i.e how often you want to show ad in RecyclerView
+
+        for (int i = spaceBetweenAds; i <= mDataSet.size(); i += (spaceBetweenAds + 1)) {
+            NativeExpressAdView adView = new NativeExpressAdView(context);
+            // I have used a Test ID provided by Admob below
+            // you should replace it with yours
+            // And if wou are just experimenting, then just copy the code
+            adView.setAdUnitId("ca-app-pub-3940256099942544/2793859312");
+            mDataSet.add(i, adView);
+        }
+
+        // Below we are using post on RecyclerView
+        // because we want to resize our native ad's width equal to screen width
+        // and we should do it after RecyclerView is created
+
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                float scale = context.getResources().getDisplayMetrics().density;
+                int adWidth = (int) (recyclerView.getWidth() - (2 * context.getResources().getDimension(R.dimen.activity_horizontal_margin)));
+
+                // we are setting size of adView
+                // you should check admob's site for possible ads size
+                AdSize adSize = new AdSize((int) (adWidth / scale), 150);
+
+                // looping over mDataset to sesize every Native Express Ad to ew adSize
+                for (int i = spaceBetweenAds; i <= mDataSet.size(); i += (spaceBetweenAds + 1)) {
+                    NativeExpressAdView adViewToSize = (NativeExpressAdView) mDataSet.get(i);
+                    adViewToSize.setAdSize(adSize);
+                }
+
+                // calling method to load native ads in their views one by one
+                loadNativeExpressAd(spaceBetweenAds);
+            }
+        });
+
+    }
+
+    private void loadNativeExpressAd(final int index) {
+
+        if (index >= mDataSet.size()) {
+            return;
+        }
+
+        Object item = mDataSet.get(index);
+        if (!(item instanceof NativeExpressAdView)) {
+            throw new ClassCastException("Expected item at index " + index + " to be a Native"
+                    + " Express ad.");
+        }
+
+        final NativeExpressAdView adView = (NativeExpressAdView) item;
+
+        // Set an AdListener on the NativeExpressAdView to wait for the previous Native Express ad
+        // to finish loading before loading the next ad in the items list.
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                // The previous Native Express ad loaded successfully, call this method again to
+                // load the next ad in the items list.
+                loadNativeExpressAd(index + spaceBetweenAds + 1);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // The previous Native Express ad failed to load. Call this method again to load
+                // the next ad in the items list.
+                Log.e("AdmobMainActivity", "The previous Native Express ad failed to load. Attempting to"
+                        + " load the next Native Express ad in the items list.");
+                loadNativeExpressAd(index + spaceBetweenAds + 1);
+            }
+        });
+
+        // Load the Native Express ad.
+        //We also registering our device as Test Device with addTestDevic("ID") method
+        adView.loadAd(new AdRequest.Builder().addTestDevice("YOUR_TEST_DEVICE_ID").build());
+    }
 
 
 }

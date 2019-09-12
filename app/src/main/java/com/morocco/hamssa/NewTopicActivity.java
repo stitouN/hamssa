@@ -204,11 +204,6 @@ public class NewTopicActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
-
-
-
-
-
     }
 
 

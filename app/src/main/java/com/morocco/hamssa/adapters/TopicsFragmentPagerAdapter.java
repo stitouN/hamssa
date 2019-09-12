@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.morocco.hamssa.MessagesFragment;
 import com.morocco.hamssa.R;
 import com.morocco.hamssa.TopicsFragment;
 
@@ -23,8 +22,8 @@ public class TopicsFragmentPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.context = context;
         tabTitles.add(context.getString(R.string.last_news));
-        tabTitles.add(context.getString(R.string.most_commented_news));
-        tabTitles.add(context.getString(R.string.my_posts));
+       /* tabTitles.add(context.getString(R.string.most_commented_news));
+        tabTitles.add(context.getString(R.string.my_posts));*/
     }
 
     @Override
@@ -36,12 +35,15 @@ public class TopicsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         if(position == 0){
             return TopicsFragment.newInstance(TopicsFragment.TYPE.LATEST);
-        }else if(position == 1){
+        }else{
+            return null;
+        }
+        /*else if(position == 1){
             return TopicsFragment.newInstance(TopicsFragment.TYPE.MOST_COMMENTED);
         }else{
             return TopicsFragment.newInstance(TopicsFragment.TYPE.MY_POSTS);
             //return MessagesFragment.newInstance(MessagesFragment.TYPE.MOST_VOTED);
-        }
+        }*/
     }
 
     @Override

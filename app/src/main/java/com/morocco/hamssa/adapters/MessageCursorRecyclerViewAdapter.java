@@ -1,6 +1,5 @@
 package com.morocco.hamssa.adapters;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.google.android.gms.gcm.GcmListenerService;
 import com.morocco.hamssa.MessagesFragment;
 import com.morocco.hamssa.MyMessagesActivity;
 import com.morocco.hamssa.R;

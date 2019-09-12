@@ -13,12 +13,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
-import com.morocco.hamssa.R;
 import com.morocco.hamssa.data.Database;
 import com.morocco.hamssa.utils.Constants;
 import com.morocco.hamssa.utils.HTTPTask;
 import com.morocco.hamssa.utils.NameValuePair;
-import com.morocco.hamssa.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

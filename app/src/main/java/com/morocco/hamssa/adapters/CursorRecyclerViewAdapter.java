@@ -16,6 +16,9 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     private boolean dataValid;
     private int rowIdColumn;
     private DataSetObserver dataSetObserver;
+    protected final int VIEW_TYPE_ITEM = 0;
+    //protected final int VIEW_TYPE_LOADING = 1;
+    protected static final int NATIVE_EXPRESS_AD_VIEW_TYPE = 1;
 
     public CursorRecyclerViewAdapter(Context context, Cursor cursor) {
         this.context = context;
@@ -84,6 +87,10 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     public Cursor swapCursor(Cursor newCursor) {
         return swapCursorFor(newCursor, ACTION.NONE, null);
     }
+
+    /*public Cursor swapCursorWithPosition(Cursor newCursor,Integer position){
+
+    }*/
     public Cursor swapCursorForRemoval(Cursor newCursor, Integer removedPosition) {
         return swapCursorFor(newCursor, ACTION.REMOVE, removedPosition);
     }
@@ -163,4 +170,11 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             return null;
         }
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position%3==0? NATIVE_EXPRESS_AD_VIEW_TYPE:VIEW_TYPE_ITEM;
+    }
+
+
 }
